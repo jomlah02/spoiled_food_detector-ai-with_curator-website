@@ -1,85 +1,101 @@
+// Batas waktu per kategori (jam). Mengacu pada prinsip umum "aturan 2 jam"
+// (WHO Five Keys to Safer Food, USDA) untuk makanan mudah rusak.
 export const FOOD_CATEGORIES = [
   {
     id: 'cooked',
-    label: 'Makanan Matang & Lauk Siap Saji',
-    hint: 'Nasi, sup, olahan daging, ayam, ikan, tumisan sayur',
+    label: 'Makanan matang',
+    hint: 'Nasi, lauk, sup, tumisan',
     roomLimitHours: 2,
     roomMaxHours: 4,
     fridgeLimitHours: 72,
+    freezerLimitHours: 24 * 90,
   },
   {
     id: 'dairy_chilled',
-    label: 'Susu, Olahan Dingin & Masakan Bersantan',
-    hint: 'Susu cair, gulai/opor bersantan, keju lunak, puding susu',
+    label: 'Bersantan & olahan susu',
+    hint: 'Opor, gulai, susu, puding',
     roomLimitHours: 2,
     roomMaxHours: 3,
     fridgeLimitHours: 48,
+    freezerLimitHours: 24 * 60,
   },
   {
     id: 'produce_cut',
-    label: 'Buah Kupas & Sayur Potong Segar',
-    hint: 'Buah potong, salad sayur segar, lalapan siap santap',
+    label: 'Buah & sayur potong',
+    hint: 'Buah kupas, salad, lalapan',
     roomLimitHours: 2,
     roomMaxHours: 4,
     fridgeLimitHours: 48,
+    freezerLimitHours: 24 * 90,
   },
   {
     id: 'bakery_dry',
-    label: 'Roti, Kue & Makanan Kering',
-    hint: 'Roti tawar, kue tanpa isian krim basah, makanan panggang',
+    label: 'Roti, kue & makanan kering',
+    hint: 'Roti, kue tanpa krim basah',
     roomLimitHours: 24,
     roomMaxHours: 48,
     fridgeLimitHours: 120,
+    freezerLimitHours: 24 * 90,
   },
 ]
 
+// Pilihan cepat: sekali ketuk mengisi nama sekaligus kategori.
+export const QUICK_FOODS = [
+  { label: 'Nasi', categoryId: 'cooked' },
+  { label: 'Ayam goreng', categoryId: 'cooked' },
+  { label: 'Sayur sop', categoryId: 'cooked' },
+  { label: 'Opor / gulai', categoryId: 'dairy_chilled' },
+  { label: 'Rendang', categoryId: 'dairy_chilled' },
+  { label: 'Susu', categoryId: 'dairy_chilled' },
+  { label: 'Buah potong', categoryId: 'produce_cut' },
+  { label: 'Salad', categoryId: 'produce_cut' },
+  { label: 'Roti', categoryId: 'bakery_dry' },
+  { label: 'Kue', categoryId: 'bakery_dry' },
+]
+
+// Kata kunci untuk menebak kategori dari nama yang diketik.
+const CATEGORY_KEYWORDS = {
+  dairy_chilled: ['santan', 'opor', 'gulai', 'kari', 'kare', 'rendang', 'lodeh', 'susu', 'puding', 'keju', 'yogurt', 'es krim'],
+  produce_cut: ['buah', 'salad', 'lalap', 'semangka', 'melon', 'pepaya', 'nanas', 'mangga', 'rujak', 'gado'],
+  bakery_dry: ['roti', 'kue', 'biskuit', 'donat', 'bolu', 'cake', 'kerupuk', 'keripik'],
+}
+
+export function guessCategory(name) {
+  const lower = name.toLowerCase()
+  for (const [categoryId, words] of Object.entries(CATEGORY_KEYWORDS)) {
+    if (words.some((word) => lower.includes(word))) return categoryId
+  }
+  return 'cooked'
+}
+
 export const STORAGE_OPTIONS = [
-  {
-    id: 'fridge',
-    label: 'Lemari Pendingin / Kulkas (≤ 4°C)',
-    desc: 'Disimpan tertutup di rak dingin kulkas',
-  },
-  {
-    id: 'room_covered',
-    label: 'Suhu Ruang — Wadah Tertutup',
-    desc: 'Di meja makan atau dapur dengan penutup rapat',
-  },
-  {
-    id: 'room_open',
-    label: 'Suhu Ruang — Terbuka',
-    desc: 'Tanpa penutup atau terpapar udara ruang langsung',
-  },
-  {
-    id: 'freezer',
-    label: 'Freezer Beku (≤ -18°C)',
-    desc: 'Disimpan dalam kondisi beku secara konsisten',
-  },
-  {
-    id: 'unknown',
-    label: 'Tidak Diketahui / Ragu',
-    desc: 'Riwayat tempat dan suhu penyimpanan tidak pasti',
-  },
+  { id: 'fridge', label: 'Kulkas', desc: 'Rak dingin, ≤ 4°C' },
+  { id: 'freezer', label: 'Freezer', desc: 'Beku, ≤ -18°C' },
+  { id: 'room_covered', label: 'Suhu ruang, tertutup', desc: 'Di meja, ada tutupnya' },
+  { id: 'room_open', label: 'Suhu ruang, terbuka', desc: 'Di meja, tanpa tutup' },
+  { id: 'unknown', label: 'Tidak tahu', desc: 'Tidak yakin disimpan di mana' },
+]
+
+export const isColdStorage = (storageId) =>
+  storageId === 'fridge' || storageId === 'freezer'
+
+// Untuk makanan di kulkas/freezer: berapa lama di suhu ruang sebelum didinginkan?
+export const PRE_ROOM_OPTIONS = [
+  { id: 'under2', label: 'Kurang dari 2 jam', hours: 1 },
+  { id: '2to4', label: '2–4 jam', hours: 3 },
+  { id: 'over4', label: 'Lebih dari 4 jam', hours: 5 },
+  { id: 'unknown', label: 'Tidak tahu', hours: null },
 ]
 
 export const SENSORY_CHECKS = [
-  {
-    id: 'odorChange',
-    label: 'Aroma asam, tengik, atau menyengat tidak wajar',
-    detail: 'Bau berbeda jelas dari aroma normal makanan tersebut',
-  },
-  {
-    id: 'textureChange',
-    label: 'Permukaan berlendir, berbusa, atau berair tidak normal',
-    detail: 'Tekstur terasa licin atau menggumpal saat diamati',
-  },
-  {
-    id: 'colorMoldChange',
-    label: 'Perubahan warna mencolok atau bercak menyerupai jamur',
-    detail: 'Titik putih, hijau, keabu-abuan, atau warna kusam ekstrem',
-  },
-  {
-    id: 'packagingSwollen',
-    label: 'Wadah menggembung atau tutup terdorong gas',
-    detail: 'Terdapat indikasi fermentasi atau gas di dalam wadah',
-  },
+  { id: 'odorChange', label: 'Bau asam, tengik, atau menyengat' },
+  { id: 'textureChange', label: 'Berlendir, berbusa, atau berair' },
+  { id: 'colorMoldChange', label: 'Berjamur atau warnanya aneh' },
+  { id: 'packagingSwollen', label: 'Wadah menggembung' },
 ]
+
+export const getCategory = (id) =>
+  FOOD_CATEGORIES.find((c) => c.id === id) || FOOD_CATEGORIES[0]
+export const getStorage = (id) =>
+  STORAGE_OPTIONS.find((s) => s.id === id) || STORAGE_OPTIONS[STORAGE_OPTIONS.length - 1]
+export const getPreRoom = (id) => PRE_ROOM_OPTIONS.find((p) => p.id === id) || null

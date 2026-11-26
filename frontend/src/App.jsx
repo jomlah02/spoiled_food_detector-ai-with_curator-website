@@ -1,78 +1,74 @@
 import { useState } from 'react'
-import { Box, Flex } from '@chakra-ui/react'
-import Navbar from './components/layout/Navbar'
-import Footer from './components/layout/Footer'
-import CheckerPage from './pages/CheckerPage'
-import HistoryPage from './pages/HistoryPage'
+import AppShell from './components/layout/AppShell'
+import HomePage from './pages/HomePage'
+import CheckPage from './pages/CheckPage'
+import KulkasPage from './pages/KulkasPage'
 import ProfilePage from './pages/ProfilePage'
-import GlobalStyles from './theme/GlobalStyles'
-import { useCupiTokens } from './theme/useCupiTokens'
-import { useFoodCheck } from './hooks/useFoodCheck'
-import { useHistory } from './hooks/useHistory'
+import { useCheckWizard } from './hooks/useCheckWizard'
+import { useKulkas } from './hooks/useKulkas'
 import { useProfile } from './hooks/useProfile'
 
 function App() {
-  const [activeNav, setActiveNav] = useState('CuPI')
-  const { bgMain, textMain } = useCupiTokens()
+  const [activeNav, setActiveNav] = useState('home')
 
-  // State disimpan di sini (bukan di tiap halaman) agar tidak hilang saat berpindah menu
-  const profileState = useProfile()
-  const history = useHistory()
-  const check = useFoodCheck({
-    profile: profileState.profile,
-    onRecordSaved: history.addRecord,
-  })
+  // State disimpan di sini (bukan di tiap halaman) agar tidak hilang saat pindah menu
+  const { profile, updateProfile } = useProfile()
+  const kulkas = useKulkas()
+  const wizard = useCheckWizard({ profile, onSave: kulkas.saveItem })
+
+  const navigate = (id) => {
+    // Menu "Cek" setelah melihat hasil = mulai cek baru
+    if (id === 'check' && wizard.isResult) wizard.reset()
+    setActiveNav(id)
+    window.scrollTo({ top: 0 })
+  }
+
+  const startNewCheck = () => {
+    wizard.reset()
+    setActiveNav('check')
+    window.scrollTo({ top: 0 })
+  }
+
+  const recheck = (item) => {
+    wizard.startRecheck(item)
+    setActiveNav('check')
+    window.scrollTo({ top: 0 })
+  }
 
   return (
-    <Flex
-      direction="column"
-      minH="100vh"
-      w="100%"
-      bg={bgMain}
-      color={textMain}
-      fontFamily="'Inter', -apple-system, BlinkMacSystemFont, sans-serif"
-      className="cupi-root-transition"
+    <AppShell
+      activeNav={activeNav}
+      onNavigate={navigate}
+      badges={{ kulkas: kulkas.active.length }}
     >
-      <GlobalStyles />
+      {activeNav === 'home' && (
+        <HomePage
+          profile={profile}
+          kulkas={kulkas}
+          wizardInProgress={wizard.hasProgress && !wizard.isResult}
+          onNewCheck={startNewCheck}
+          onContinueCheck={() => navigate('check')}
+          onNavigate={navigate}
+        />
+      )}
 
-      <Navbar activeNav={activeNav} setActiveNav={setActiveNav} />
+      {activeNav === 'check' && (
+        <CheckPage
+          wizard={wizard}
+          profile={profile}
+          onNewCheck={startNewCheck}
+          onNavigate={navigate}
+        />
+      )}
 
-      <Flex
-        as="main"
-        flex="1"
-        direction="column"
-        align="center"
-        w="100%"
-        pt={{ base: '92px', sm: '104px' }}
-        pb={{ base: '48px', md: '64px' }}
-        px={{ base: 4, sm: 6 }}
-      >
-        <Box
-          key={activeNav}
-          w="100%"
-          maxW="880px"
-          animation="pageFadeUp 0.32s cubic-bezier(0.16, 1, 0.3, 1) both"
-        >
-          {activeNav === 'CuPI' && (
-            <CheckerPage
-              check={check}
-              profile={profileState.profile}
-              setActiveNav={setActiveNav}
-            />
-          )}
+      {activeNav === 'kulkas' && (
+        <KulkasPage kulkas={kulkas} onNewCheck={startNewCheck} onRecheck={recheck} />
+      )}
 
-          {activeNav === 'History Track' && (
-            <HistoryPage history={history} setActiveNav={setActiveNav} />
-          )}
-
-          {activeNav === 'Profile' && (
-            <ProfilePage profileState={profileState} history={history} />
-          )}
-        </Box>
-      </Flex>
-
-      <Footer />
-    </Flex>
+      {activeNav === 'profile' && (
+        <ProfilePage profile={profile} updateProfile={updateProfile} kulkas={kulkas} />
+      )}
+    </AppShell>
   )
 }
 
