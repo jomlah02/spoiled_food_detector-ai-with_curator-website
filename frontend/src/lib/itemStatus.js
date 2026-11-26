@@ -1,6 +1,5 @@
 import { STATUS } from '../constants/status'
 
-// Status yang ditampilkan sekarang: hasil cek, kecuali batas waktunya sudah lewat.
 export function getLiveStatus(item, now) {
   const expired =
     item.deadline &&
@@ -11,7 +10,6 @@ export function getLiveStatus(item, now) {
     : { status: item.status, label: null, expired: false }
 }
 
-// Urutan di Kulkas saya: yang berbahaya dulu, lalu yang batas waktunya paling dekat.
 export function sortByUrgency(items, now) {
   const rank = { danger: 0, caution: 1, info: 2, ok: 3 }
   return [...items].sort((a, b) => {

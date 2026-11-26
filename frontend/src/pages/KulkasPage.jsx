@@ -1,12 +1,13 @@
 import { useState } from 'react'
 import { Box, Button, Flex, Heading, HStack, Text, VStack } from '@chakra-ui/react'
 import KulkasItemCard from '../components/kulkas/KulkasItemCard'
+import TextButton from '../components/ui/TextButton'
 import { OUTCOMES } from '../constants/status'
 import { useNow } from '../hooks/useNow'
 import { sortByUrgency } from '../lib/itemStatus'
 import { formatMoment } from '../lib/time'
 
-// Posisi label sedikit berbeda-beda, seperti ditempel tangan.
+// biar kayak ditempel tangan
 const TILTS = [-0.6, 0.5, -0.3, 0.7, -0.5]
 const TAPES = ['50%', '30%', '68%', '42%', '60%']
 
@@ -24,14 +25,6 @@ function Tab({ active, onClick, children }) {
       borderColor={active ? 'fg' : 'transparent'}
       _hover={{ color: 'fg' }}
     >
-      {children}
-    </Box>
-  )
-}
-
-function SmallTextButton({ onClick, children, ...rest }) {
-  return (
-    <Box as="button" type="button" onClick={onClick} textStyle="mono" fontSize="10px" color="fg.muted" _hover={{ color: 'fg' }} {...rest}>
       {children}
     </Box>
   )
@@ -100,7 +93,6 @@ function KulkasPage({ kulkas, onNewCheck, onRecheck }) {
           </Text>
         ) : (
           <Box>
-            {/* Seperti struk: satu baris per makanan */}
             <Box bg="bg.surface" border="1.5px solid" borderColor="border" borderRadius="label" px={4} py={2}>
               {kulkas.closed.map((item, index) => (
                 <Flex
@@ -127,12 +119,12 @@ function KulkasPage({ kulkas, onNewCheck, onRecheck }) {
                   <Text textStyle="mono" fontSize="11px" color={item.outcome === 'tossed' ? 'fg.muted' : 'brand'}>
                     {OUTCOMES[item.outcome]}
                   </Text>
-                  <SmallTextButton onClick={() => kulkas.setOutcome(item.id, null)} aria-label={`Kembalikan ${item.foodName}`}>
+                  <TextButton fontSize="10px" onClick={() => kulkas.setOutcome(item.id, null)} aria-label={`Kembalikan ${item.foodName}`}>
                     Batal
-                  </SmallTextButton>
-                  <SmallTextButton onClick={() => kulkas.deleteItem(item.id)} aria-label={`Hapus ${item.foodName}`}>
+                  </TextButton>
+                  <TextButton fontSize="10px" onClick={() => kulkas.deleteItem(item.id)} aria-label={`Hapus ${item.foodName}`}>
                     Hapus
-                  </SmallTextButton>
+                  </TextButton>
                 </Flex>
               ))}
             </Box>
@@ -143,10 +135,10 @@ function KulkasPage({ kulkas, onNewCheck, onRecheck }) {
                   <Button size="sm" variant="danger" onClick={() => { kulkas.clearClosed(); setConfirmClear(false) }}>
                     Hapus
                   </Button>
-                  <SmallTextButton onClick={() => setConfirmClear(false)}>Batal</SmallTextButton>
+                  <TextButton fontSize="10px" onClick={() => setConfirmClear(false)}>Batal</TextButton>
                 </HStack>
               ) : (
-                <SmallTextButton onClick={() => setConfirmClear(true)}>Hapus semua catatan</SmallTextButton>
+                <TextButton fontSize="10px" onClick={() => setConfirmClear(true)}>Hapus semua catatan</TextButton>
               )}
             </Box>
           </Box>

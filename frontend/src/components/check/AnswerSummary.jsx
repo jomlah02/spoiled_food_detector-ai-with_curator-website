@@ -29,7 +29,6 @@ function labelFor(step, answers, now) {
   }
 }
 
-// Jawaban yang sudah terisi, ditulis seperti catatan di pinggir label. Ketuk untuk mengubah.
 function AnswerSummary({ answers, currentStep, onEdit, now }) {
   const items = CHECK_STEPS.map((step, index) => ({ step, index })).filter(
     ({ step, index }) => index !== currentStep && isStepAnswered(step, answers)

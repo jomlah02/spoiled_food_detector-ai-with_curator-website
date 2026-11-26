@@ -11,13 +11,12 @@ import { useProfile } from './hooks/useProfile'
 function App() {
   const [activeNav, setActiveNav] = useState('home')
 
-  // State disimpan di sini (bukan di tiap halaman) agar tidak hilang saat pindah menu
+  // state taruh di sini biar ga ilang pas pindah tab
   const { profile, updateProfile } = useProfile()
   const kulkas = useKulkas()
   const wizard = useCheckWizard({ profile, onSave: kulkas.saveItem })
 
   const navigate = (id) => {
-    // Menu "Cek" setelah melihat hasil = mulai cek baru
     if (id === 'check' && wizard.isResult) wizard.reset()
     setActiveNav(id)
     window.scrollTo({ top: 0 })

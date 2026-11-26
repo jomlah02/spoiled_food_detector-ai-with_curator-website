@@ -12,7 +12,6 @@ function StepFood({ answers, update, next }) {
     setError('')
     update({
       foodName: value,
-      // Kategori ikut menebak dari nama, kecuali sudah dipilih manual
       categoryId: answers.categoryTouched ? answers.categoryId : guessCategory(value),
     })
   }

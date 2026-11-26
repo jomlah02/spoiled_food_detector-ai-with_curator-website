@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Box, Collapse, HStack, Text, VStack } from '@chakra-ui/react'
-// Daftar langkah bernomor 01, 02, 03.
+
 export function ActionList({ actions }) {
   return (
     <VStack as="ol" listStyleType="none" align="stretch" spacing={0}>
@@ -24,7 +24,6 @@ export function ActionList({ actions }) {
   )
 }
 
-// Catatan kecil di pinggir, ditulis miring.
 export function WasteTip({ children }) {
   return (
     <Box borderLeft="3px solid" borderColor="brand" borderRadius={0} pl={4} py={1}>

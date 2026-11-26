@@ -2,14 +2,12 @@ import { useMemo } from 'react'
 import { STORAGE_KEYS } from '../constants/storage'
 import { useLocalStorageState } from './useLocalStorageState'
 
-// "Kulkas saya": semua makanan yang sudah dicek.
-// Item aktif = outcome null. Item selesai = dimakan / dibagikan / dibuang.
 export function useKulkas() {
   const [items, setItems] = useLocalStorageState(STORAGE_KEYS.KULKAS, [], (parsed) =>
     Array.isArray(parsed) ? parsed : undefined
   )
 
-  // Simpan hasil cek baru, atau timpa item lama saat "Cek ulang"
+  // id sama (cek ulang) = timpa yg lama
   const saveItem = (record) => {
     setItems((prev) => {
       const index = prev.findIndex((item) => item.id === record.id)

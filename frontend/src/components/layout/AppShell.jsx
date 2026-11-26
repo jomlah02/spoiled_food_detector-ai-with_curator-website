@@ -4,7 +4,6 @@ import GlobalStyles from '../../theme/GlobalStyles'
 
 const count = (n) => (n > 0 ? ` (${n})` : '')
 
-// Kerangka aplikasi: kop di atas, navigasi bawah di HP, navigasi atas di layar lebar.
 function AppShell({ activeNav, onNavigate, badges = {}, children }) {
   const { colorMode, toggleColorMode } = useColorMode()
 
@@ -91,7 +90,6 @@ function AppShell({ activeNav, onNavigate, badges = {}, children }) {
         {children}
       </Box>
 
-      {/* Navigasi bawah, khusus HP */}
       <Box
         as="nav"
         aria-label="Navigasi utama"

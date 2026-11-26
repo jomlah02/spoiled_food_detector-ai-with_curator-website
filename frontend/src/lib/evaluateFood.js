@@ -7,9 +7,7 @@ import {
 import { STATUS } from '../constants/status'
 import { HOUR, formatDuration } from './time'
 
-// Mesin penilaian CuPI.
-// Prinsip: waktu & suhu adalah penentu utama. Bau/tampilan normal TIDAK BOLEH
-// menaikkan status yang berisiko karena waktu/suhu. Tidak pernah mengklaim "100% aman".
+// waktu & suhu yg nentuin. bau/tampilan normal ga boleh bikin status naik
 export function evaluateFood({
   foodName,
   categoryId,
@@ -33,7 +31,6 @@ export function evaluateFood({
         ? 'Bau, warna, dan tekstur belum dicek.'
         : ''
 
-  // 1. Tanda fisik pembusukan: langsung jangan dikonsumsi
   if (sensory === 'flags' && sensoryFlags.length > 0) {
     const labels = SENSORY_CHECKS.filter((c) => sensoryFlags.includes(c.id)).map((c) =>
       c.label.toLowerCase()
@@ -59,7 +56,6 @@ export function evaluateFood({
     }
   }
 
-  // 2. Data waktu atau tempat simpan belum ada
   const hasTime = Number.isFinite(cookedAt)
   if (!hasTime || storageId === 'unknown' || !storageId) {
     const both = !hasTime && (storageId === 'unknown' || !storageId)
@@ -173,7 +169,6 @@ export function evaluateFood({
     result.factors = { time: timeFactor, sensory: sensoryFactor }
     result.deadlineLabel = 'Habiskan sebelum'
   } else {
-    // Suhu ruang
     const isOpen = storageId === 'room_open'
     const strict = strictRoomTempAlert || isOpen
     const dangerAt = strict ? category.roomLimitHours : category.roomMaxHours
@@ -226,7 +221,7 @@ export function evaluateFood({
       result.status === STATUS.OK ? 'Masukkan kulkas sebelum' : 'Batas waktu'
   }
 
-  // Belum dicek bau & tampilan: status terbaik dibatasi "hati-hati"
+  // belum dicium = maksimal hati-hati
   if (sensory === 'unchecked' && result.status === STATUS.OK) {
     result.status = STATUS.CAUTION
     result.headline = 'Cek bau dan tampilannya dulu'

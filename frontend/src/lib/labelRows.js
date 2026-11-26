@@ -1,7 +1,6 @@
 import { getPreRoom, getStorage } from '../constants/food'
 import { formatMoment, formatTimeLeft } from './time'
 
-// Baris-baris label: kapan dimasak, disimpan di mana, sampai kapan.
 export function labelRowsFor(record, now) {
   const pre = getPreRoom(record.preRoom)
   const storage = record.storageId

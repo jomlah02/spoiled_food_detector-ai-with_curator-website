@@ -6,6 +6,7 @@ import StepFood from '../components/check/StepFood'
 import StepSensory from '../components/check/StepSensory'
 import StepStorage from '../components/check/StepStorage'
 import StepTime from '../components/check/StepTime'
+import TextButton from '../components/ui/TextButton'
 import { CHECK_STEPS } from '../hooks/useCheckWizard'
 import { useNow } from '../hooks/useNow'
 
@@ -18,14 +19,6 @@ const STEP_COMPONENTS = {
 }
 
 const pad = (n) => String(n).padStart(2, '0')
-
-function TextButton({ onClick, children }) {
-  return (
-    <Box as="button" type="button" onClick={onClick} textStyle="mono" color="fg.muted" _hover={{ color: 'fg' }}>
-      {children}
-    </Box>
-  )
-}
 
 function CheckPage({ wizard, profile, onNewCheck, onNavigate }) {
   const now = useNow()

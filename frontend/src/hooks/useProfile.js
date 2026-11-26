@@ -1,7 +1,6 @@
 import { DEFAULT_PROFILE, STORAGE_KEYS } from '../constants/storage'
 import { useLocalStorageState } from './useLocalStorageState'
 
-// Nama pengguna dan preferensi penilaian, tersimpan di perangkat.
 export function useProfile() {
   const [profile, setProfile] = useLocalStorageState(
     STORAGE_KEYS.PROFILE,

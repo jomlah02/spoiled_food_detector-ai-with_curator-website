@@ -1,7 +1,5 @@
 import { extendTheme } from '@chakra-ui/react'
 
-// Arah desain "Label dapur": kertas, tinta, selotip, dan stempel.
-// Satu token = satu warna untuk mode terang dan gelap.
 const t = (light, dark) => ({ default: light, _dark: dark })
 
 export const theme = extendTheme({
@@ -19,24 +17,20 @@ export const theme = extendTheme({
   },
   semanticTokens: {
     colors: {
-      // Kertas & label
       'bg.canvas': t('#F2ECDF', '#171612'),
       'bg.surface': t('#FBF8F0', '#22201A'),
       'bg.muted': t('#E9E2D2', '#2B2820'),
       tape: t('#E3D5B0', '#4A4231'),
 
-      // Tinta
       fg: t('#1A1A17', '#EFE9DA'),
       'fg.muted': t('#5C574C', '#B0A893'),
       'fg.subtle': t('#8A8475', '#7F7866'),
-      'ink.fg': t('#FBF8F0', '#171612'), // teks di atas blok tinta
+      'ink.fg': t('#FBF8F0', '#171612'),
       border: t('#1A1A17', '#8C8470'),
       'border.soft': t('#CFC6B2', '#3A372D'),
 
-      // Hijau CuPI, dipakai hemat
       brand: t('#2F6B4F', '#8FC4A3'),
 
-      // Warna tinta stempel status
       'status.ok': t('#2F6B4F', '#8FC4A3'),
       'status.ok.bg': t('#E6EDDF', '#1D2A21'),
       'status.caution': t('#A86A12', '#E5AC4C'),
@@ -48,7 +42,6 @@ export const theme = extendTheme({
     },
   },
   textStyles: {
-    // Huruf mesin ketik untuk label, tanggal, dan keterangan kecil
     mono: {
       fontFamily: 'mono',
       fontSize: 'xs',

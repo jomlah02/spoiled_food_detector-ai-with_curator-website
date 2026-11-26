@@ -1,4 +1,4 @@
-// Perkecil foto sebelum disimpan, supaya localStorage (±5 MB) tidak cepat penuh.
+// dikecilin dulu, localStorage cuma ~5MB
 export function downscaleImage(file, maxSize = 720, quality = 0.72) {
   return new Promise((resolve, reject) => {
     const url = URL.createObjectURL(file)

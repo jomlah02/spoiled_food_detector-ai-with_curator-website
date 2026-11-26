@@ -1,6 +1,5 @@
 import { Grid, Text } from '@chakra-ui/react'
 
-// Baris "KUNCI   nilai" ala label cetak.
 function LabelRows({ rows }) {
   return (
     <Grid templateColumns="76px 1fr" rowGap={1.5} columnGap={3} fontFamily="mono" fontSize="13px">

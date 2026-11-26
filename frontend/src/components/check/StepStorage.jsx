@@ -9,8 +9,8 @@ function StepStorage({ answers, update, advance }) {
   const place = answers.storageId === 'freezer' ? 'freezer' : 'kulkas'
 
   const selectStorage = (storageId) => {
+    // kulkas/freezer masih ada 1 pertanyaan lagi
     if (isColdStorage(storageId)) {
-      // Kulkas/freezer: tanya dulu berapa lama di luar sebelumnya
       update({ storageId, preRoom: storageId === answers.storageId ? answers.preRoom : null })
     } else {
       advance({ storageId, preRoom: null })

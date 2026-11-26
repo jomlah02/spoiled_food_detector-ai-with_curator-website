@@ -2,11 +2,11 @@ import { Box, Button, Flex, Heading, Stack, Text, VStack } from '@chakra-ui/reac
 import Label from '../components/ui/Label'
 import LabelRows from '../components/ui/LabelRows'
 import Stamp from '../components/ui/Stamp'
+import TextButton from '../components/ui/TextButton'
 import { useNow } from '../hooks/useNow'
 import { getLiveStatus, sortByUrgency } from '../lib/itemStatus'
 import { formatTimeLeft, startOfMonth } from '../lib/time'
 
-// Contoh label untuk pengunjung baru: menjelaskan aplikasi tanpa kartu "cara kerja".
 function SampleLabel() {
   return (
     <Box position="relative" maxW="360px" mx={{ base: 'auto', md: 0 }}>
@@ -91,9 +91,9 @@ function HomePage({ profile, kulkas, wizardInProgress, onNewCheck, onContinueChe
         <Box>
           <Flex justify="space-between" align="baseline" mb={4}>
             <Text textStyle="mono" color="fg.muted">Di kulkas kamu</Text>
-            <Box as="button" type="button" onClick={() => onNavigate('kulkas')} textStyle="mono" fontSize="11px" color="fg.muted" _hover={{ color: 'fg' }}>
+            <TextButton fontSize="11px" onClick={() => onNavigate('kulkas')}>
               Lihat semua →
-            </Box>
+            </TextButton>
           </Flex>
           <Label p={0}>
             {upcoming.map((item, index) => {

@@ -2,7 +2,6 @@ import { useState } from 'react'
 import { isColdStorage } from '../constants/food'
 import { evaluateFood } from '../lib/evaluateFood'
 
-// Urutan langkah. Cek tanda bahaya ada di depan supaya bisa langsung ke hasil.
 export const CHECK_STEPS = ['food', 'sensory', 'time', 'storage', 'extras']
 export const RESULT_STEP = CHECK_STEPS.length
 
@@ -10,9 +9,9 @@ const EMPTY_ANSWERS = {
   foodName: '',
   categoryId: 'cooked',
   categoryTouched: false,
-  sensory: null, // 'normal' | 'flags' | 'unchecked'
+  sensory: null,
   sensoryFlags: [],
-  cookedChoice: null, // id pilihan cepat | 'custom' | 'unknown'
+  cookedChoice: null,
   cookedAt: null,
   storageId: null,
   preRoom: null,
@@ -20,19 +19,18 @@ const EMPTY_ANSWERS = {
   notes: '',
 }
 
-// Apakah langkah ini sudah terjawab? Dipakai untuk ringkasan jawaban.
 export function isStepAnswered(step, answers) {
   switch (step) {
     case 'food':
       return answers.foodName.trim().length > 0
     case 'sensory':
-      return answers.sensory === 'normal' || answers.sensory === 'unchecked' ||
-        (answers.sensory === 'flags' && answers.sensoryFlags.length > 0)
+      if (answers.sensory === 'flags') return answers.sensoryFlags.length > 0
+      return answers.sensory !== null
     case 'time':
       return answers.cookedChoice !== null
     case 'storage':
-      return Boolean(answers.storageId) &&
-        (!isColdStorage(answers.storageId) || Boolean(answers.preRoom))
+      if (!answers.storageId) return false
+      return !isColdStorage(answers.storageId) || !!answers.preRoom
     default:
       return false
   }
@@ -41,7 +39,6 @@ export function isStepAnswered(step, answers) {
 const makeId = () =>
   `CUPI-${Date.now().toString(36).toUpperCase()}-${Math.floor(Math.random() * 1000)}`
 
-// State formulir cek bertahap. Disimpan di App agar tidak hilang saat pindah menu.
 export function useCheckWizard({ profile, onSave }) {
   const [answers, setAnswers] = useState(EMPTY_ANSWERS)
   const [step, setStep] = useState(0)
@@ -56,7 +53,7 @@ export function useCheckWizard({ profile, onSave }) {
   const next = () => goTo(Math.min(step + 1, CHECK_STEPS.length - 1))
   const back = () => goTo(Math.max(step - 1, 0))
 
-  // Simpan jawaban lalu pindah otomatis, dengan jeda singkat agar pilihan terlihat
+  // delay dikit biar pilihannya keliatan dulu
   const advance = (patch) => {
     if (patch) update(patch)
     setTimeout(() => {
@@ -104,7 +101,7 @@ export function useCheckWizard({ profile, onSave }) {
     setStep(0)
   }
 
-  // Cek ulang makanan dari Kulkas saya: semua jawaban terisi, bau & tampilan dicek lagi
+  // jawaban lama dipakai lagi, cuma bau/tampilan yg dicek ulang
   const startRecheck = (item) => {
     setAnswers({
       ...EMPTY_ANSWERS,

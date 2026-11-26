@@ -1,6 +1,5 @@
 import { Box } from '@chakra-ui/react'
 
-// Label kertas bergaris tinta. `tape` menambah selotip di atasnya.
 function Label({ tape = false, tapeAt = '50%', tilt = 0, children, ...rest }) {
   return (
     <Box

@@ -1,8 +1,5 @@
 import { useState, useEffect } from 'react'
 
-// useState yang otomatis dibaca dari dan disimpan ke localStorage.
-// `parse` menerima nilai hasil JSON.parse dan mengembalikan nilai valid,
-// atau undefined untuk memakai `fallback`.
 export function useLocalStorageState(key, fallback, parse = (value) => value) {
   const [value, setValue] = useState(() => {
     try {
@@ -12,7 +9,7 @@ export function useLocalStorageState(key, fallback, parse = (value) => value) {
         if (parsed !== undefined) return parsed
       }
     } catch {
-      // Data rusak atau localStorage tidak tersedia: pakai nilai awal
+      // data rusak, pakai default aja
     }
     return fallback
   })
@@ -21,7 +18,7 @@ export function useLocalStorageState(key, fallback, parse = (value) => value) {
     try {
       localStorage.setItem(key, JSON.stringify(value))
     } catch {
-      // Abaikan error kuota localStorage
+      // kuota penuh, biarin
     }
   }, [key, value])
 

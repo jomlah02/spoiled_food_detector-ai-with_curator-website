@@ -1,5 +1,4 @@
-// Batas waktu per kategori (jam). Mengacu pada prinsip umum "aturan 2 jam"
-// (WHO Five Keys to Safer Food, USDA) untuk makanan mudah rusak.
+// batas dalam jam, ngikutin aturan 2 jam (WHO / USDA)
 export const FOOD_CATEGORIES = [
   {
     id: 'cooked',
@@ -39,7 +38,6 @@ export const FOOD_CATEGORIES = [
   },
 ]
 
-// Pilihan cepat: sekali ketuk mengisi nama sekaligus kategori.
 export const QUICK_FOODS = [
   { label: 'Nasi', categoryId: 'cooked' },
   { label: 'Ayam goreng', categoryId: 'cooked' },
@@ -53,7 +51,6 @@ export const QUICK_FOODS = [
   { label: 'Kue', categoryId: 'bakery_dry' },
 ]
 
-// Kata kunci untuk menebak kategori dari nama yang diketik.
 const CATEGORY_KEYWORDS = {
   dairy_chilled: ['santan', 'opor', 'gulai', 'kari', 'kare', 'rendang', 'lodeh', 'susu', 'puding', 'keju', 'yogurt', 'es krim'],
   produce_cut: ['buah', 'salad', 'lalap', 'semangka', 'melon', 'pepaya', 'nanas', 'mangga', 'rujak', 'gado'],
@@ -79,7 +76,6 @@ export const STORAGE_OPTIONS = [
 export const isColdStorage = (storageId) =>
   storageId === 'fridge' || storageId === 'freezer'
 
-// Untuk makanan di kulkas/freezer: berapa lama di suhu ruang sebelum didinginkan?
 export const PRE_ROOM_OPTIONS = [
   { id: 'under2', label: 'Kurang dari 2 jam', hours: 1 },
   { id: '2to4', label: '2–4 jam', hours: 3 },

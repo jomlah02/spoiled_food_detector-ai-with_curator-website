@@ -1,7 +1,6 @@
 import { Box } from '@chakra-ui/react'
 import { STATUS_LABELS, STATUS_STAMPS } from '../../constants/status'
 
-// Status sebagai stempel tinta. Teksnya sendiri sudah menjelaskan, tidak hanya warna.
 function Stamp({ status, label, size = 'sm', animate = false }) {
   const large = size === 'lg'
   return (

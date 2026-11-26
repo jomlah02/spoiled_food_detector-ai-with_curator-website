@@ -18,6 +18,7 @@ function StepExtras({ answers, update, finish }) {
     }
     setLoading(true)
     try {
+      // TODO: foto belum dianalisis, baru disimpan aja
       update({ imagePreview: await downscaleImage(file) })
     } catch {
       setError('Fotonya gagal dibuka. Coba foto lain.')

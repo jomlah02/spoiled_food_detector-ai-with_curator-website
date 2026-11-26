@@ -6,17 +6,9 @@ import { formatAgo, formatMoment, formatTimeLeft } from '../../lib/time'
 import { getLiveStatus } from '../../lib/itemStatus'
 import Label from '../ui/Label'
 import Stamp from '../ui/Stamp'
+import TextButton from '../ui/TextButton'
 import { ActionList, WhyDetails } from '../check/ResultDetails'
 
-function TextButton({ onClick, children, ...rest }) {
-  return (
-    <Box as="button" type="button" onClick={onClick} textStyle="mono" fontSize="11px" color="fg.muted" _hover={{ color: 'fg' }} {...rest}>
-      {children}
-    </Box>
-  )
-}
-
-// Satu makanan di Kulkas saya, tampil sebagai label bertempel selotip.
 function KulkasItemCard({ item, now, tilt = 0, tapeAt = '50%', onOutcome, onRecheck, onDelete }) {
   const [open, setOpen] = useState(false)
   const live = getLiveStatus(item, now)
@@ -79,12 +71,12 @@ function KulkasItemCard({ item, now, tilt = 0, tapeAt = '50%', onOutcome, onRech
       </Box>
 
       <Flex justify="space-between" px={4} py={2.5} borderTop="1.5px dashed" borderColor="border.soft">
-        <TextButton onClick={() => setOpen((v) => !v)} aria-expanded={open}>
+        <TextButton fontSize="11px" onClick={() => setOpen((v) => !v)} aria-expanded={open}>
           {open ? '− Tutup' : '+ Detail'}
         </TextButton>
         <HStack spacing={4}>
-          <TextButton onClick={() => onRecheck(item)}>Cek ulang</TextButton>
-          <TextButton onClick={() => onDelete(item.id)} aria-label={`Hapus ${item.foodName}`}>
+          <TextButton fontSize="11px" onClick={() => onRecheck(item)}>Cek ulang</TextButton>
+          <TextButton fontSize="11px" onClick={() => onDelete(item.id)} aria-label={`Hapus ${item.foodName}`}>
             Hapus
           </TextButton>
         </HStack>

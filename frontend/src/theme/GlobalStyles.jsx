@@ -1,4 +1,3 @@
-// Animasi ringan: halaman muncul, langkah bergeser, stempel "dicap".
 const GLOBAL_CSS = `
   @keyframes fadeUp {
     from { opacity: 0; transform: translateY(6px); }

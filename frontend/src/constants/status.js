@@ -1,4 +1,3 @@
-// Empat status hasil penilaian. Warnanya ada di theme (status.<id>, status.<id>.bg, status.<id>.fg).
 export const STATUS = {
   OK: 'ok',
   CAUTION: 'caution',
@@ -13,7 +12,6 @@ export const STATUS_LABELS = {
   info: 'Perlu info',
 }
 
-// Teks pendek untuk stempel
 export const STATUS_STAMPS = {
   ok: 'Layak',
   caution: 'Hati-hati',

@@ -1,6 +1,5 @@
 import { Box, Text } from '@chakra-ui/react'
 
-// Tag kecil seperti potongan label. Terpilih = tinta penuh.
 function Chip({ children, sub, selected, onClick, ...rest }) {
   return (
     <Box

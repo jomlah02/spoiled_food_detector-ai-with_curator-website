@@ -12,7 +12,6 @@ function CheckResult({ record, now, showWasteGuidance, onNewCheck, onOpenKulkas 
 
   return (
     <VStack align="stretch" spacing={8} pt={3}>
-      {/* Labelnya */}
       <Label tape tapeAt="38%" p={{ base: 5, sm: 7 }} animation="labelIn 0.4s ease-out both">
         <Flex justify="space-between" align="start" gap={4}>
           <Text textStyle="mono" color="fg.muted" pt={1}>
@@ -51,7 +50,6 @@ function CheckResult({ record, now, showWasteGuidance, onNewCheck, onOpenKulkas 
         </Box>
       </Label>
 
-      {/* Langkah */}
       <Box>
         <Text textStyle="mono" color="fg.muted" mb={1}>
           Yang perlu dilakukan

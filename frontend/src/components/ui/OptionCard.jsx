@@ -1,7 +1,6 @@
 import { Box, Flex, Text } from '@chakra-ui/react'
 import { Check } from 'lucide-react'
 
-// Pilihan seperti kotak centang di formulir kertas.
 function OptionCard({ title, description, selected, onClick, tone }) {
   const accent = tone ? `status.${tone}` : 'fg'
 

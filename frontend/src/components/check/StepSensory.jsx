@@ -3,7 +3,6 @@ import { SENSORY_CHECKS } from '../../constants/food'
 import OptionCard from '../ui/OptionCard'
 import StepHeader from './StepHeader'
 
-// Gerbang tanda bahaya: kalau ada, langsung ke hasil tanpa pertanyaan lain.
 function StepSensory({ answers, update, advance, finish }) {
   const showFlags = answers.sensory === 'flags'
 

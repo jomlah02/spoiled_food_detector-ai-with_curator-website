@@ -7,7 +7,6 @@ import StepHeader from './StepHeader'
 
 const MAX_AGE_HOURS = 24 * 120
 
-// Ditanya jam masak, bukan "berapa jam". CuPI yang menghitung durasinya.
 function StepTime({ answers, update, advance, next, now }) {
   const [showCustom, setShowCustom] = useState(answers.cookedChoice === 'custom')
   const [error, setError] = useState('')
