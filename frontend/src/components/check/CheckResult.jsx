@@ -1,98 +1,81 @@
-import { Box, Button, Heading, HStack, Image, Stack, Text, VStack } from '@chakra-ui/react'
-import { Clock, Plus, Refrigerator } from 'lucide-react'
+import { Box, Button, Flex, Heading, Image, Stack, Text, VStack } from '@chakra-ui/react'
 import { getCategory } from '../../constants/food'
-import { formatMoment, formatTimeLeft } from '../../lib/time'
 import { getLiveStatus } from '../../lib/itemStatus'
-import StatusBadge from '../ui/StatusBadge'
+import { labelRowsFor } from '../../lib/labelRows'
+import Label from '../ui/Label'
+import LabelRows from '../ui/LabelRows'
+import Stamp from '../ui/Stamp'
 import { ActionList, WasteTip, WhyDetails } from './ResultDetails'
 
 function CheckResult({ record, now, showWasteGuidance, onNewCheck, onOpenKulkas }) {
   const live = getLiveStatus(record, now)
-  const status = live.status
 
   return (
-    <VStack align="stretch" spacing={5} animation="popIn 0.35s cubic-bezier(0.16, 1, 0.3, 1) both">
-      <Box
-        borderRadius="2xl"
-        overflow="hidden"
-        border="1px solid"
-        borderColor={`status.${status}`}
-        bg="bg.surface"
-      >
-        <Box bg={`status.${status}.bg`} px={{ base: 5, sm: 6 }} py={{ base: 5, sm: 6 }}>
-          <HStack justify="space-between" align="start" spacing={3}>
-            <Box>
-              <Text fontSize="sm" color={`status.${status}.fg`} fontWeight="semibold" mb={2}>
-                {record.foodName} · {getCategory(record.categoryId).label}
-              </Text>
-              <StatusBadge status={status} label={live.label} size="lg" />
-            </Box>
-            {record.imagePreview && (
-              <Image
-                src={record.imagePreview}
-                alt=""
-                w="64px"
-                h="64px"
-                borderRadius="lg"
-                objectFit="cover"
-                flexShrink={0}
-              />
-            )}
-          </HStack>
-          <Heading as="h1" fontSize={{ base: '2xl', sm: '3xl' }} fontWeight="extrabold" mt={4} color={`status.${status}.fg`}>
-            {record.headline}
-          </Heading>
-          <Text mt={2} color={`status.${status}.fg`}>
-            {record.summary}
+    <VStack align="stretch" spacing={8} pt={3}>
+      {/* Labelnya */}
+      <Label tape tapeAt="38%" p={{ base: 5, sm: 7 }} animation="labelIn 0.4s ease-out both">
+        <Flex justify="space-between" align="start" gap={4}>
+          <Text textStyle="mono" color="fg.muted" pt={1}>
+            {record.foodName} · {getCategory(record.categoryId).label}
           </Text>
-
-          {record.deadline && !live.expired && (
-            <HStack
-              mt={4}
-              spacing={2}
-              display="inline-flex"
-              bg="bg.surface"
-              color="fg"
-              px={3}
-              py={2}
-              borderRadius="lg"
-              fontSize="sm"
-            >
-              <Clock size={16} aria-hidden="true" />
-              <Text>
-                {record.deadlineLabel} <b>{formatMoment(record.deadline, now)}</b>
-                <Text as="span" color="fg.muted"> · {formatTimeLeft(record.deadline, now)}</Text>
-              </Text>
-            </HStack>
+          {record.imagePreview && (
+            <Image
+              src={record.imagePreview}
+              alt=""
+              w="60px"
+              h="60px"
+              objectFit="cover"
+              border="1.5px solid"
+              borderColor="border"
+              borderRadius="2px"
+              transform="rotate(3deg)"
+              flexShrink={0}
+            />
           )}
+        </Flex>
+
+        <Heading as="h1" fontSize={{ base: '32px', sm: '40px' }} lineHeight="1.05" mt={3}>
+          {record.headline}
+        </Heading>
+
+        <Box mt={5}>
+          <Stamp status={live.status} label={live.label} size="lg" animate />
         </Box>
 
-        <VStack align="stretch" spacing={5} px={{ base: 5, sm: 6 }} py={5}>
-          <Box>
-            <Text fontWeight="bold" mb={3}>
-              Yang perlu dilakukan sekarang
-            </Text>
-            <ActionList actions={record.actions} />
-          </Box>
+        <Text mt={5} color="fg.muted">
+          {record.summary}
+        </Text>
 
-          {showWasteGuidance && record.wasteGuidance && <WasteTip>{record.wasteGuidance}</WasteTip>}
+        <Box mt={5} pt={4} borderTop="1.5px dashed" borderColor="border.soft">
+          <LabelRows rows={labelRowsFor(record, now)} />
+        </Box>
+      </Label>
 
-          <WhyDetails record={record} />
-        </VStack>
+      {/* Langkah */}
+      <Box>
+        <Text textStyle="mono" color="fg.muted" mb={1}>
+          Yang perlu dilakukan
+        </Text>
+        <ActionList actions={record.actions} />
       </Box>
 
-      <Text fontSize="sm" color="fg.muted" textAlign="center">
-        Tersimpan otomatis di Kulkas saya.
-      </Text>
+      {showWasteGuidance && record.wasteGuidance && <WasteTip>{record.wasteGuidance}</WasteTip>}
 
-      <Stack direction={{ base: 'column', sm: 'row' }} spacing={3}>
-        <Button variant="primary" size="lg" flex="1" leftIcon={<Plus size={18} />} onClick={onNewCheck}>
-          Cek makanan lain
-        </Button>
-        <Button size="lg" flex="1" leftIcon={<Refrigerator size={18} />} onClick={onOpenKulkas}>
-          Buka Kulkas saya
-        </Button>
-      </Stack>
+      <WhyDetails record={record} />
+
+      <Box pt={2}>
+        <Text fontSize="sm" color="fg.muted" mb={3}>
+          Label ini sudah ditempel di Kulkas saya.
+        </Text>
+        <Stack direction={{ base: 'column', sm: 'row' }} spacing={2}>
+          <Button variant="primary" size="lg" flex="1" onClick={onNewCheck}>
+            Cek makanan lain
+          </Button>
+          <Button size="lg" flex="1" onClick={onOpenKulkas}>
+            Lihat Kulkas saya
+          </Button>
+        </Stack>
+      </Box>
     </VStack>
   )
 }

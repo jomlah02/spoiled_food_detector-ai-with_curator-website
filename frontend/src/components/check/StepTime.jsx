@@ -1,6 +1,5 @@
 import { useState } from 'react'
-import { Box, Button, Collapse, Input, SimpleGrid, Text } from '@chakra-ui/react'
-import { ArrowRight, CalendarClock, CircleHelp } from 'lucide-react'
+import { Box, Button, Collapse, Input, SimpleGrid, Text, VStack } from '@chakra-ui/react'
 import { formatAgo, getCookedTimeOptions, HOUR, toLocalInputValue } from '../../lib/time'
 import Chip from '../ui/Chip'
 import OptionCard from '../ui/OptionCard'
@@ -28,7 +27,7 @@ function StepTime({ answers, update, advance, next, now }) {
       return
     }
     if (ms > now) {
-      setError('Waktunya tidak boleh di masa depan.')
+      setError('Waktunya belum terjadi. Cek lagi tanggalnya.')
       return
     }
     if ((now - ms) / HOUR > MAX_AGE_HOURS) {
@@ -42,10 +41,10 @@ function StepTime({ answers, update, advance, next, now }) {
     <Box>
       <StepHeader
         title="Kapan dimasak atau dibeli?"
-        subtitle="Kira-kira saja. CuPI yang menghitung sudah berapa lama."
+        subtitle="Kira-kira saja, nanti kami yang hitung."
       />
 
-      <SimpleGrid columns={2} spacing={2.5}>
+      <SimpleGrid columns={2} spacing={2}>
         {options.map((option) => (
           <Chip
             key={option.id}
@@ -62,19 +61,19 @@ function StepTime({ answers, update, advance, next, now }) {
         ))}
       </SimpleGrid>
 
-      <Box mt={3}>
+      <VStack align="stretch" spacing={2} mt={5}>
         <OptionCard
-          icon={CalendarClock}
-          title="Pilih tanggal dan jam"
-          description="Kalau kamu tahu waktu pastinya"
+          title="Tahu jam pastinya"
+          description="Pilih tanggal dan jam"
           selected={showCustom}
           onClick={() => setShowCustom(true)}
         />
         <Collapse in={showCustom} animateOpacity>
-          <Box pt={3}>
+          <Box pt={1} pb={2}>
             <Input
               type="datetime-local"
               size="lg"
+              fontFamily="mono"
               max={toLocalInputValue(now)}
               value={
                 answers.cookedChoice === 'custom' && answers.cookedAt
@@ -89,32 +88,21 @@ function StepTime({ answers, update, advance, next, now }) {
                 {error}
               </Text>
             )}
-            <Button
-              variant="primary"
-              size="lg"
-              w="100%"
-              mt={3}
-              rightIcon={<ArrowRight size={18} />}
-              onClick={handleCustomContinue}
-            >
-              Lanjut
+            <Button variant="primary" size="lg" w="100%" mt={3} onClick={handleCustomContinue}>
+              Lanjut →
             </Button>
           </Box>
         </Collapse>
-      </Box>
-
-      <Box mt={2.5}>
         <OptionCard
-          icon={CircleHelp}
           title="Tidak tahu"
-          description="Misalnya makanan dari acara atau pemberian orang"
+          description="Misalnya dari acara, atau dikasih orang"
           selected={answers.cookedChoice === 'unknown'}
           onClick={() => {
             setShowCustom(false)
             advance({ cookedAt: null, cookedChoice: 'unknown' })
           }}
         />
-      </Box>
+      </VStack>
     </Box>
   )
 }

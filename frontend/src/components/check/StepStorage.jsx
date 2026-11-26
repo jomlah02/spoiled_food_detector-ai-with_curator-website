@@ -1,17 +1,8 @@
 import { Box, Collapse, SimpleGrid, Text } from '@chakra-ui/react'
-import { CircleHelp, Package, PackageOpen, Refrigerator, Snowflake } from 'lucide-react'
 import { PRE_ROOM_OPTIONS, STORAGE_OPTIONS, isColdStorage } from '../../constants/food'
 import Chip from '../ui/Chip'
 import OptionCard from '../ui/OptionCard'
 import StepHeader from './StepHeader'
-
-const STORAGE_ICONS = {
-  fridge: Refrigerator,
-  freezer: Snowflake,
-  room_covered: Package,
-  room_open: PackageOpen,
-  unknown: CircleHelp,
-}
 
 function StepStorage({ answers, update, advance }) {
   const cold = isColdStorage(answers.storageId)
@@ -28,13 +19,12 @@ function StepStorage({ answers, update, advance }) {
 
   return (
     <Box>
-      <StepHeader title="Sejak itu disimpan di mana?" />
+      <StepHeader title="Habis itu disimpan di mana?" />
 
-      <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={2.5}>
+      <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={2}>
         {STORAGE_OPTIONS.map((option) => (
           <OptionCard
             key={option.id}
-            icon={STORAGE_ICONS[option.id]}
             title={option.label}
             description={option.desc}
             selected={answers.storageId === option.id}
@@ -44,9 +34,12 @@ function StepStorage({ answers, update, advance }) {
       </SimpleGrid>
 
       <Collapse in={cold} animateOpacity>
-        <Box mt={5} p={4} borderRadius="xl" bg="bg.muted">
-          <Text fontWeight="semibold" mb={3}>
-            Sebelum masuk {place}, berapa lama di suhu ruang?
+        <Box mt={6} pt={5} borderTop="1.5px dashed" borderColor="border.soft">
+          <Text fontFamily="heading" fontSize="xl" fontWeight={600} mb={1}>
+            Sebelum masuk {place}, sempat di luar berapa lama?
+          </Text>
+          <Text fontSize="sm" color="fg.muted" mb={4}>
+            Misalnya didiamkan di meja dulu sampai dingin.
           </Text>
           <SimpleGrid columns={2} spacing={2}>
             {PRE_ROOM_OPTIONS.map((option) => (
@@ -54,7 +47,7 @@ function StepStorage({ answers, update, advance }) {
                 key={option.id}
                 selected={answers.preRoom === option.id}
                 onClick={() => advance({ preRoom: option.id })}
-                py={2.5}
+                py={3}
               >
                 {option.label}
               </Chip>

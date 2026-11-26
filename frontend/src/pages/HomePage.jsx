@@ -1,64 +1,101 @@
-import { Box, Button, Flex, Heading, HStack, SimpleGrid, Text, VStack } from '@chakra-ui/react'
-import { ArrowRight, ClipboardCheck, Clock, Plus, Refrigerator } from 'lucide-react'
-import Panel from '../components/ui/Panel'
-import StatusBadge from '../components/ui/StatusBadge'
+import { Box, Button, Flex, Heading, Stack, Text, VStack } from '@chakra-ui/react'
+import Label from '../components/ui/Label'
+import LabelRows from '../components/ui/LabelRows'
+import Stamp from '../components/ui/Stamp'
 import { useNow } from '../hooks/useNow'
 import { getLiveStatus, sortByUrgency } from '../lib/itemStatus'
 import { formatTimeLeft, startOfMonth } from '../lib/time'
 
-const HOW_IT_WORKS = [
-  { icon: ClipboardCheck, title: 'Jawab 4 pertanyaan', text: 'Makanannya apa, kapan dimasak, disimpan di mana, dan apa ada tanda aneh.' },
-  { icon: Clock, title: 'Lihat hasil dan batas waktu', text: 'CuPI memberi tahu apa yang harus dilakukan dan sampai kapan.' },
-  { icon: Refrigerator, title: 'Pantau di Kulkas saya', text: 'Tandai saat dimakan, dibagikan, atau dibuang.' },
-]
+// Contoh label untuk pengunjung baru: menjelaskan aplikasi tanpa kartu "cara kerja".
+function SampleLabel() {
+  return (
+    <Box position="relative" maxW="360px" mx={{ base: 'auto', md: 0 }}>
+      <Label tape tapeAt="62%" tilt={-2} p={5}>
+        <Flex justify="space-between" align="start">
+          <Text textStyle="mono" color="fg.muted">Nasi goreng</Text>
+          <Text fontFamily="mono" fontSize="10px" color="fg.subtle">CONTOH</Text>
+        </Flex>
+        <Heading as="p" fontSize="24px" lineHeight="1.1" mt={2}>
+          Segera makan atau masukkan kulkas
+        </Heading>
+        <Box mt={4}>
+          <Stamp status="caution" />
+        </Box>
+        <Box mt={4} pt={3} borderTop="1.5px dashed" borderColor="border.soft">
+          <LabelRows
+            rows={[
+              ['Masak', 'tadi pagi 07.00'],
+              ['Simpan', 'di meja, tertutup'],
+              ['Batas', 'hari ini 09.00'],
+            ]}
+          />
+        </Box>
+      </Label>
+    </Box>
+  )
+}
+
+function ReceiptLine({ label, value }) {
+  return (
+    <Flex align="baseline" gap={2} fontFamily="mono" fontSize="13px">
+      <Text textTransform="uppercase" letterSpacing="0.06em">{label}</Text>
+      <Box flex="1" borderBottom="1.5px dotted" borderColor="border.soft" transform="translateY(-4px)" />
+      <Text fontWeight={600}>{String(value).padStart(2, '0')}</Text>
+    </Flex>
+  )
+}
 
 function HomePage({ profile, kulkas, wizardInProgress, onNewCheck, onContinueCheck, onNavigate }) {
   const now = useNow()
-  const firstVisit = kulkas.items.length === 0
   const upcoming = sortByUrgency(kulkas.active, now).slice(0, 3)
 
   const monthStart = startOfMonth(now)
   const closedThisMonth = kulkas.closed.filter((item) => item.closedAt >= monthStart)
   const saved = closedThisMonth.filter((item) => item.outcome !== 'tossed').length
   const tossed = closedThisMonth.length - saved
+  const isNewHere = kulkas.items.length === 0
 
   return (
-    <VStack align="stretch" spacing={7}>
-      {/* Hero */}
-      <Box pt={{ base: 2, md: 4 }}>
-        <Text fontSize="sm" fontWeight="semibold" color="brand" mb={2}>
-          {firstVisit ? 'Cek kelayakan makanan' : `Halo, ${profile.displayName}`}
-        </Text>
-        <Heading as="h1" fontSize={{ base: '3xl', sm: '4xl' }} fontWeight="extrabold" lineHeight="1.1">
-          Masih aman dimakan?
+    <VStack align="stretch" spacing={12}>
+      <Box>
+        {!isNewHere && (
+          <Text textStyle="mono" color="fg.muted" mb={4}>
+            Halo, {profile.displayName}
+          </Text>
+        )}
+        <Heading as="h1" fontSize={{ base: '44px', sm: '60px' }} lineHeight="0.98" letterSpacing="-0.035em">
+          Masih aman
+          <br />
+          dimakan?
         </Heading>
-        <Text color="fg.muted" mt={3} fontSize={{ base: 'md', sm: 'lg' }} maxW="520px">
-          Cek sisa makanan dalam ±30 detik. CuPI melihat kapan dimasak, di mana disimpan, dan tanda fisiknya.
+        <Text color="fg.muted" mt={5} fontSize={{ base: 'md', sm: 'lg' }} maxW="440px">
+          Jawab empat pertanyaan singkat. Kamu dapat label: boleh dimakan atau tidak, dan sampai kapan.
         </Text>
-        <Flex gap={3} mt={6} direction={{ base: 'column', sm: 'row' }}>
-          <Button variant="primary" size="lg" leftIcon={<Plus size={20} />} onClick={onNewCheck}>
-            Cek makanan
+        <Stack direction={{ base: 'column', sm: 'row' }} spacing={2} mt={7}>
+          <Button variant="primary" size="lg" onClick={onNewCheck}>
+            Cek makanan →
           </Button>
           {wizardInProgress && (
-            <Button size="lg" rightIcon={<ArrowRight size={18} />} onClick={onContinueCheck}>
-              Lanjutkan cek tadi
+            <Button size="lg" onClick={onContinueCheck}>
+              Lanjutkan yang tadi
             </Button>
           )}
-        </Flex>
+        </Stack>
       </Box>
 
-      {/* Makanan yang masih ada */}
-      {upcoming.length > 0 && (
+      {upcoming.length === 0 ? (
+        <Box pt={2}>
+          <SampleLabel />
+        </Box>
+      ) : (
         <Box>
-          <Flex justify="space-between" align="baseline" mb={3}>
-            <Heading as="h2" fontSize="lg" fontWeight="bold">
-              Di kulkas kamu
-            </Heading>
-            <Button variant="ghost" size="sm" mr={-2} rightIcon={<ArrowRight size={15} />} onClick={() => onNavigate('kulkas')}>
-              Lihat semua
-            </Button>
+          <Flex justify="space-between" align="baseline" mb={4}>
+            <Text textStyle="mono" color="fg.muted">Di kulkas kamu</Text>
+            <Box as="button" type="button" onClick={() => onNavigate('kulkas')} textStyle="mono" fontSize="11px" color="fg.muted" _hover={{ color: 'fg' }}>
+              Lihat semua →
+            </Box>
           </Flex>
-          <Panel p={0}>
+          <Label p={0}>
             {upcoming.map((item, index) => {
               const live = getLiveStatus(item, now)
               return (
@@ -72,68 +109,37 @@ function HomePage({ profile, kulkas, wizardInProgress, onNewCheck, onContinueChe
                   align="center"
                   gap={3}
                   px={4}
-                  py={3}
-                  borderTop={index === 0 ? 'none' : '1px solid'}
-                  borderColor="border"
+                  py={3.5}
+                  borderTop={index === 0 ? 'none' : '1px dashed'}
+                  borderColor="border.soft"
                   _hover={{ bg: 'bg.muted' }}
                 >
                   <Box flex="1" minW={0}>
-                    <Text fontWeight="semibold" noOfLines={1}>{item.foodName}</Text>
-                    <Text fontSize="xs" color={live.expired ? 'status.danger' : 'fg.muted'}>
-                      {item.deadline ? formatTimeLeft(item.deadline, now) : 'Tanpa batas waktu'}
+                    <Text fontWeight={600} noOfLines={1}>{item.foodName}</Text>
+                    <Text fontFamily="mono" fontSize="11px" color={live.expired ? 'status.danger' : 'fg.subtle'} textTransform="uppercase">
+                      {item.deadline ? formatTimeLeft(item.deadline, now) : 'tanpa batas waktu'}
                     </Text>
                   </Box>
-                  <StatusBadge status={live.status} label={live.label} />
+                  <Stamp status={live.status} label={live.label} />
                 </Flex>
               )
             })}
-          </Panel>
+          </Label>
         </Box>
       )}
 
-      {/* Statistik bulan ini */}
       {closedThisMonth.length > 0 && (
-        <SimpleGrid columns={2} spacing={3}>
-          <Box p={4} borderRadius="xl" bg="brand.subtle">
-            <Text fontSize="3xl" fontWeight="extrabold" fontFamily="heading" color="brand.subtleFg">
-              {saved}
-            </Text>
-            <Text fontSize="sm" color="brand.subtleFg">porsi terselamatkan bulan ini</Text>
-          </Box>
-          <Box p={4} borderRadius="xl" bg="bg.muted">
-            <Text fontSize="3xl" fontWeight="extrabold" fontFamily="heading">
-              {tossed}
-            </Text>
-            <Text fontSize="sm" color="fg.muted">porsi dibuang bulan ini</Text>
-          </Box>
-        </SimpleGrid>
+        <Box maxW="360px" p={5} bg="bg.surface" border="1.5px dashed" borderColor="border" borderRadius="label">
+          <Text textStyle="mono" color="fg.muted" mb={3}>Bulan ini</Text>
+          <VStack align="stretch" spacing={2}>
+            <ReceiptLine label="Diselamatkan" value={saved} />
+            <ReceiptLine label="Dibuang" value={tossed} />
+          </VStack>
+        </Box>
       )}
 
-      {/* Cara kerja */}
-      <Box>
-        <Heading as="h2" fontSize="lg" fontWeight="bold" mb={3}>
-          Cara kerjanya
-        </Heading>
-        <SimpleGrid columns={{ base: 1, sm: 3 }} spacing={3}>
-          {HOW_IT_WORKS.map((step, index) => (
-            <Panel key={step.title} p={4}>
-              <HStack spacing={2} mb={2}>
-                <Flex w="28px" h="28px" borderRadius="full" bg="brand.subtle" color="brand" align="center" justify="center" fontSize="sm" fontWeight="bold">
-                  {index + 1}
-                </Flex>
-                <step.icon size={18} aria-hidden="true" />
-              </HStack>
-              <Text fontWeight="semibold">{step.title}</Text>
-              <Text fontSize="sm" color="fg.muted" mt={1}>
-                {step.text}
-              </Text>
-            </Panel>
-          ))}
-        </SimpleGrid>
-      </Box>
-
-      <Text fontSize="xs" color="fg.subtle" textAlign="center">
-        CuPI memberi panduan umum berdasarkan waktu dan suhu simpan, bukan hasil uji laboratorium.
+      <Text fontSize="xs" color="fg.subtle" maxW="440px">
+        CuPI memberi panduan umum dari waktu dan tempat simpan, bukan hasil uji lab. Kalau masih ragu, jangan dimakan.
       </Text>
     </VStack>
   )

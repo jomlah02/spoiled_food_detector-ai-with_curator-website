@@ -13,6 +13,14 @@ export const STATUS_LABELS = {
   info: 'Perlu info',
 }
 
+// Teks pendek untuk stempel
+export const STATUS_STAMPS = {
+  ok: 'Layak',
+  caution: 'Hati-hati',
+  danger: 'Jangan dimakan',
+  info: 'Perlu info',
+}
+
 export const OUTCOMES = {
   eaten: 'Dimakan',
   shared: 'Dibagikan',

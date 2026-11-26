@@ -2,12 +2,12 @@ import { Box, Heading, Text } from '@chakra-ui/react'
 
 function StepHeader({ title, subtitle }) {
   return (
-    <Box mb={5}>
-      <Heading as="h1" fontSize={{ base: '2xl', sm: '3xl' }} fontWeight="extrabold" lineHeight="1.2">
+    <Box mb={6}>
+      <Heading as="h1" fontSize={{ base: '30px', sm: '38px' }} lineHeight="1.08">
         {title}
       </Heading>
       {subtitle && (
-        <Text color="fg.muted" mt={2}>
+        <Text color="fg.muted" mt={3} fontSize="md">
           {subtitle}
         </Text>
       )}

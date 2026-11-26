@@ -1,5 +1,4 @@
-import { Box, Button, Flex, HStack, Progress, Text, VStack } from '@chakra-ui/react'
-import { ChevronLeft, RotateCcw } from 'lucide-react'
+import { Box, Flex, HStack, Text, VStack } from '@chakra-ui/react'
 import AnswerSummary from '../components/check/AnswerSummary'
 import CheckResult from '../components/check/CheckResult'
 import StepExtras from '../components/check/StepExtras'
@@ -16,6 +15,16 @@ const STEP_COMPONENTS = {
   time: StepTime,
   storage: StepStorage,
   extras: StepExtras,
+}
+
+const pad = (n) => String(n).padStart(2, '0')
+
+function TextButton({ onClick, children }) {
+  return (
+    <Box as="button" type="button" onClick={onClick} textStyle="mono" color="fg.muted" _hover={{ color: 'fg' }}>
+      {children}
+    </Box>
+  )
 }
 
 function CheckPage({ wizard, profile, onNewCheck, onNavigate }) {
@@ -37,51 +46,34 @@ function CheckPage({ wizard, profile, onNewCheck, onNavigate }) {
   const StepComponent = STEP_COMPONENTS[wizard.stepName]
 
   return (
-    <VStack align="stretch" spacing={5}>
-      <Flex align="center" justify="space-between" minH="32px">
-        {wizard.step > 0 ? (
-          <Button
-            variant="ghost"
-            size="sm"
-            ml={-2}
-            leftIcon={<ChevronLeft size={18} />}
-            onClick={wizard.back}
-          >
-            Kembali
-          </Button>
-        ) : (
-          <Text fontSize="sm" fontWeight="semibold" color="brand">
-            {wizard.isRecheck ? 'Cek ulang' : 'Cek makanan'}
-          </Text>
-        )}
-        {wizard.hasProgress && (
-          <Button
-            variant="ghost"
-            size="sm"
-            mr={-2}
-            leftIcon={<RotateCcw size={15} />}
-            onClick={onNewCheck}
-          >
-            Mulai ulang
-          </Button>
-        )}
-      </Flex>
-
+    <VStack align="stretch" spacing={6}>
       <Box>
-        <HStack justify="space-between" fontSize="xs" color="fg.muted" mb={2}>
-          <Text fontWeight="semibold">
-            Langkah {wizard.step + 1} dari {total}
-          </Text>
-          <Text>± 30 detik</Text>
+        <Flex align="center" justify="space-between" mb={3} minH="20px">
+          {wizard.step > 0 ? (
+            <TextButton onClick={wizard.back}>← Kembali</TextButton>
+          ) : (
+            <Text textStyle="mono" color="fg.muted">
+              {wizard.isRecheck ? 'Cek ulang' : 'Cek baru'}
+            </Text>
+          )}
+          <HStack spacing={4}>
+            {wizard.hasProgress && <TextButton onClick={onNewCheck}>Ulang dari awal</TextButton>}
+            <Text fontFamily="mono" fontSize="xs" color="fg">
+              {pad(wizard.step + 1)}/{pad(total)}
+            </Text>
+          </HStack>
+        </Flex>
+        <HStack spacing={1} aria-label={`Langkah ${wizard.step + 1} dari ${total}`} role="img">
+          {CHECK_STEPS.map((step, index) => (
+            <Box
+              key={step}
+              flex="1"
+              h="4px"
+              bg={index <= wizard.step ? 'fg' : 'border.soft'}
+              transition="background-color 0.25s ease"
+            />
+          ))}
         </HStack>
-        <Progress
-          value={((wizard.step + 1) / total) * 100}
-          size="sm"
-          borderRadius="full"
-          bg="bg.muted"
-          sx={{ '& > div': { bg: 'brand', transition: 'width 0.3s ease' } }}
-          aria-label="Progres pemeriksaan"
-        />
       </Box>
 
       <AnswerSummary
@@ -91,7 +83,7 @@ function CheckPage({ wizard, profile, onNewCheck, onNavigate }) {
         now={now}
       />
 
-      <Box key={wizard.step} animation="stepIn 0.28s cubic-bezier(0.16, 1, 0.3, 1) both">
+      <Box key={wizard.step} animation="stepIn 0.26s ease-out both">
         <StepComponent
           answers={wizard.answers}
           update={wizard.update}

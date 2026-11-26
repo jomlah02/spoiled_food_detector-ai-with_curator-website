@@ -1,6 +1,5 @@
 import { useState } from 'react'
 import { Box, Button, Flex, Input, SimpleGrid, Text } from '@chakra-ui/react'
-import { ArrowRight } from 'lucide-react'
 import { FOOD_CATEGORIES, QUICK_FOODS, guessCategory } from '../../constants/food'
 import Chip from '../ui/Chip'
 import OptionCard from '../ui/OptionCard'
@@ -20,7 +19,7 @@ function StepFood({ answers, update, next }) {
 
   const handleContinue = () => {
     if (!answers.foodName.trim()) {
-      setError('Tulis nama makanannya dulu, atau pilih dari pilihan cepat.')
+      setError('Tulis nama makanannya dulu, atau ketuk salah satu di bawah.')
       return
     }
     next()
@@ -28,14 +27,16 @@ function StepFood({ answers, update, next }) {
 
   return (
     <Box>
-      <StepHeader title="Makanan apa yang mau dicek?" />
+      <StepHeader title="Makanan apa?" />
 
       <Input
         size="lg"
+        h="56px"
+        fontSize="lg"
         value={answers.foodName}
         onChange={(e) => handleNameChange(e.target.value)}
         onKeyDown={(e) => e.key === 'Enter' && handleContinue()}
-        placeholder="Contoh: opor ayam"
+        placeholder="opor ayam, nasi, buah potong…"
         aria-label="Nama makanan"
         aria-invalid={Boolean(error)}
         autoFocus
@@ -61,10 +62,10 @@ function StepFood({ answers, update, next }) {
         ))}
       </Flex>
 
-      <Text fontSize="sm" fontWeight="semibold" color="fg.muted" mt={7} mb={3}>
-        Jenis makanan {answers.foodName.trim() && '(sudah ditebak, ubah kalau keliru)'}
+      <Text textStyle="mono" color="fg.muted" mt={9} mb={3}>
+        Jenis {answers.foodName.trim() && '— sudah kami tebak, ganti kalau salah'}
       </Text>
-      <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={2.5}>
+      <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={2}>
         {FOOD_CATEGORIES.map((category) => (
           <OptionCard
             key={category.id}
@@ -76,15 +77,8 @@ function StepFood({ answers, update, next }) {
         ))}
       </SimpleGrid>
 
-      <Button
-        variant="primary"
-        size="lg"
-        w="100%"
-        mt={7}
-        rightIcon={<ArrowRight size={18} />}
-        onClick={handleContinue}
-      >
-        Lanjut
+      <Button variant="primary" size="lg" w="100%" mt={8} onClick={handleContinue}>
+        Lanjut →
       </Button>
     </Box>
   )

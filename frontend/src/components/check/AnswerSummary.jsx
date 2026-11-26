@@ -1,13 +1,12 @@
-import { Flex, HStack, Text } from '@chakra-ui/react'
-import { Pencil } from 'lucide-react'
+import { Box, Flex, Text } from '@chakra-ui/react'
 import { getPreRoom, getStorage } from '../../constants/food'
 import { CHECK_STEPS, isStepAnswered } from '../../hooks/useCheckWizard'
 import { formatAgo } from '../../lib/time'
 
 const SENSORY_LABELS = {
-  normal: 'Bau & tampilan normal',
-  unchecked: 'Belum dicek',
-  flags: 'Ada tanda aneh',
+  normal: 'bau normal',
+  unchecked: 'belum dicium',
+  flags: 'ada yang aneh',
 }
 
 function labelFor(step, answers, now) {
@@ -18,19 +17,19 @@ function labelFor(step, answers, now) {
       return SENSORY_LABELS[answers.sensory]
     case 'time':
       return answers.cookedChoice === 'unknown'
-        ? 'Waktu tidak diketahui'
-        : `Dimasak ${formatAgo(answers.cookedAt, now)}`
+        ? 'waktu tidak tahu'
+        : `masak ${formatAgo(answers.cookedAt, now)}`
     case 'storage': {
       const pre = getPreRoom(answers.preRoom)
-      const storage = getStorage(answers.storageId).label
-      return pre ? `${storage}, sebelumnya ${pre.label.toLowerCase()} di luar` : storage
+      const storage = getStorage(answers.storageId).label.toLowerCase()
+      return pre ? `${storage}, ${pre.label.toLowerCase()} di luar` : storage
     }
     default:
       return ''
   }
 }
 
-// Jawaban yang sudah terisi tampil sebagai pil kecil. Ketuk untuk mengubah.
+// Jawaban yang sudah terisi, ditulis seperti catatan di pinggir label. Ketuk untuk mengubah.
 function AnswerSummary({ answers, currentStep, onEdit, now }) {
   const items = CHECK_STEPS.map((step, index) => ({ step, index })).filter(
     ({ step, index }) => index !== currentStep && isStepAnswered(step, answers)
@@ -39,29 +38,24 @@ function AnswerSummary({ answers, currentStep, onEdit, now }) {
   if (items.length === 0) return null
 
   return (
-    <Flex wrap="wrap" gap={2}>
-      {items.map(({ step, index }) => (
-        <HStack
-          as="button"
-          type="button"
-          key={step}
-          onClick={() => onEdit(index)}
-          spacing={1.5}
-          px={3}
-          py={1}
-          borderRadius="full"
-          bg="bg.muted"
-          color="fg.muted"
-          fontSize="xs"
-          fontWeight="semibold"
-          _hover={{ color: 'fg' }}
-          aria-label={`Ubah: ${labelFor(step, answers, now)}`}
-        >
-          <Text as="span" noOfLines={1} maxW="220px">
+    <Flex wrap="wrap" columnGap={2} rowGap={1} align="baseline" fontFamily="mono" fontSize="12px">
+      {items.map(({ step, index }, i) => (
+        <Flex key={step} align="baseline" gap={2}>
+          {i > 0 && <Text as="span" color="fg.subtle" aria-hidden="true">/</Text>}
+          <Box
+            as="button"
+            type="button"
+            onClick={() => onEdit(index)}
+            color="fg.muted"
+            textDecoration="underline"
+            textDecorationStyle="dotted"
+            textUnderlineOffset="3px"
+            _hover={{ color: 'fg', textDecorationStyle: 'solid' }}
+            title="Ketuk untuk mengubah"
+          >
             {labelFor(step, answers, now)}
-          </Text>
-          <Pencil size={11} aria-hidden="true" />
-        </HStack>
+          </Box>
+        </Flex>
       ))}
     </Flex>
   )

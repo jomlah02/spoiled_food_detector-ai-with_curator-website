@@ -1,18 +1,24 @@
-// Animasi ringan untuk perpindahan halaman dan langkah, plus dukungan reduced-motion.
+// Animasi ringan: halaman muncul, langkah bergeser, stempel "dicap".
 const GLOBAL_CSS = `
   @keyframes fadeUp {
-    from { opacity: 0; transform: translateY(8px); }
+    from { opacity: 0; transform: translateY(6px); }
     to { opacity: 1; transform: translateY(0); }
   }
 
   @keyframes stepIn {
-    from { opacity: 0; transform: translateX(16px); }
+    from { opacity: 0; transform: translateX(14px); }
     to { opacity: 1; transform: translateX(0); }
   }
 
-  @keyframes popIn {
-    from { opacity: 0; transform: scale(0.96); }
-    to { opacity: 1; transform: scale(1); }
+  @keyframes labelIn {
+    from { opacity: 0; transform: translateY(-10px) rotate(-1.5deg); }
+    to { opacity: 1; transform: translateY(0) rotate(0); }
+  }
+
+  @keyframes stampIn {
+    0% { opacity: 0; transform: scale(1.6) rotate(-8deg); }
+    60% { opacity: 1; transform: scale(0.94) rotate(-3deg); }
+    100% { opacity: 1; transform: scale(1) rotate(-3deg); }
   }
 
   body {

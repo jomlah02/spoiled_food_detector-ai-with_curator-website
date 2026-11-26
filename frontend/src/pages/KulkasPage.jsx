@@ -1,31 +1,37 @@
 import { useState } from 'react'
-import { Box, Button, Flex, Heading, HStack, IconButton, Text, VStack } from '@chakra-ui/react'
-import { HandHeart, Plus, Refrigerator, Trash2, Undo2, Utensils } from 'lucide-react'
+import { Box, Button, Flex, Heading, HStack, Text, VStack } from '@chakra-ui/react'
 import KulkasItemCard from '../components/kulkas/KulkasItemCard'
-import Panel from '../components/ui/Panel'
 import { OUTCOMES } from '../constants/status'
 import { useNow } from '../hooks/useNow'
 import { sortByUrgency } from '../lib/itemStatus'
 import { formatMoment } from '../lib/time'
 
-const OUTCOME_ICONS = { eaten: Utensils, shared: HandHeart, tossed: Trash2 }
+// Posisi label sedikit berbeda-beda, seperti ditempel tangan.
+const TILTS = [-0.6, 0.5, -0.3, 0.7, -0.5]
+const TAPES = ['50%', '30%', '68%', '42%', '60%']
 
-function TabButton({ active, onClick, children }) {
+function Tab({ active, onClick, children }) {
   return (
     <Box
       as="button"
       type="button"
       onClick={onClick}
       aria-pressed={active}
-      flex="1"
-      py={2}
-      borderRadius="lg"
-      fontSize="sm"
-      fontWeight="semibold"
-      bg={active ? 'bg.surface' : 'transparent'}
-      color={active ? 'fg' : 'fg.muted'}
-      boxShadow={active ? 'sm' : 'none'}
+      textStyle="mono"
+      pb={2}
+      color={active ? 'fg' : 'fg.subtle'}
+      borderBottom="2px solid"
+      borderColor={active ? 'fg' : 'transparent'}
+      _hover={{ color: 'fg' }}
     >
+      {children}
+    </Box>
+  )
+}
+
+function SmallTextButton({ onClick, children, ...rest }) {
+  return (
+    <Box as="button" type="button" onClick={onClick} textStyle="mono" fontSize="10px" color="fg.muted" _hover={{ color: 'fg' }} {...rest}>
       {children}
     </Box>
   )
@@ -38,48 +44,47 @@ function KulkasPage({ kulkas, onNewCheck, onRecheck }) {
   const active = sortByUrgency(kulkas.active, now)
 
   return (
-    <VStack align="stretch" spacing={5}>
+    <VStack align="stretch" spacing={7}>
       <Box>
-        <Heading as="h1" fontSize={{ base: '2xl', sm: '3xl' }} fontWeight="extrabold">
+        <Heading as="h1" fontSize={{ base: '34px', sm: '42px' }} lineHeight="1.05">
           Kulkas saya
         </Heading>
-        <Text color="fg.muted" mt={1}>
-          Makanan yang sudah kamu cek. Tandai kalau sudah dimakan, dibagikan, atau dibuang.
+        <Text color="fg.muted" mt={2}>
+          Semua yang sudah kamu cek. Yang paling mendesak ada di atas.
         </Text>
       </Box>
 
-      <HStack p={1} borderRadius="xl" bg="bg.muted" spacing={1}>
-        <TabButton active={tab === 'active'} onClick={() => setTab('active')}>
+      <HStack spacing={6} borderBottom="1.5px solid" borderColor="border.soft">
+        <Tab active={tab === 'active'} onClick={() => setTab('active')}>
           Masih ada ({kulkas.active.length})
-        </TabButton>
-        <TabButton active={tab === 'closed'} onClick={() => setTab('closed')}>
+        </Tab>
+        <Tab active={tab === 'closed'} onClick={() => setTab('closed')}>
           Selesai ({kulkas.closed.length})
-        </TabButton>
+        </Tab>
       </HStack>
 
       {tab === 'active' &&
         (active.length === 0 ? (
-          <Panel textAlign="center" py={10}>
-            <Flex w="56px" h="56px" mx="auto" borderRadius="full" bg="brand.subtle" color="brand" align="center" justify="center">
-              <Refrigerator size={26} aria-hidden="true" />
-            </Flex>
-            <Text fontWeight="bold" mt={4}>
-              Cek makanan pertamamu
+          <Box py={10} px={6} textAlign="center" border="1.5px dashed" borderColor="border.soft" borderRadius="label">
+            <Text fontFamily="heading" fontSize="2xl" fontWeight={600}>
+              Masih kosong.
             </Text>
-            <Text color="fg.muted" fontSize="sm" mt={1} maxW="320px" mx="auto">
-              Setiap hasil cek tersimpan di sini lengkap dengan sisa waktunya.
+            <Text color="fg.muted" mt={2} maxW="320px" mx="auto">
+              Setiap makanan yang kamu cek akan ditempel di sini, lengkap dengan sisa waktunya.
             </Text>
-            <Button variant="primary" mt={5} leftIcon={<Plus size={18} />} onClick={onNewCheck}>
+            <Button variant="primary" mt={6} onClick={onNewCheck}>
               Cek makanan
             </Button>
-          </Panel>
+          </Box>
         ) : (
-          <VStack align="stretch" spacing={3}>
-            {active.map((item) => (
+          <VStack align="stretch" spacing={7} pt={2}>
+            {active.map((item, index) => (
               <KulkasItemCard
                 key={item.id}
                 item={item}
                 now={now}
+                tilt={TILTS[index % TILTS.length]}
+                tapeAt={TAPES[index % TAPES.length]}
                 onOutcome={kulkas.setOutcome}
                 onRecheck={onRecheck}
                 onDelete={kulkas.deleteItem}
@@ -90,79 +95,61 @@ function KulkasPage({ kulkas, onNewCheck, onRecheck }) {
 
       {tab === 'closed' &&
         (kulkas.closed.length === 0 ? (
-          <Panel textAlign="center" py={8}>
-            <Text color="fg.muted" fontSize="sm">
-              Makanan yang sudah dimakan, dibagikan, atau dibuang akan muncul di sini.
-            </Text>
-          </Panel>
+          <Text color="fg.muted" py={6}>
+            Yang sudah dimakan, dibagikan, atau dibuang akan dicatat di sini.
+          </Text>
         ) : (
-          <>
-            <Panel p={0}>
-              {kulkas.closed.map((item, index) => {
-                const Icon = OUTCOME_ICONS[item.outcome]
-                return (
-                  <HStack
-                    key={item.id}
-                    px={4}
-                    py={3}
-                    spacing={3}
-                    borderTop={index === 0 ? 'none' : '1px solid'}
-                    borderColor="border"
-                  >
-                    <Flex
-                      w="36px"
-                      h="36px"
-                      flexShrink={0}
-                      borderRadius="full"
-                      align="center"
-                      justify="center"
-                      bg={item.outcome === 'tossed' ? 'bg.muted' : 'brand.subtle'}
-                      color={item.outcome === 'tossed' ? 'fg.muted' : 'brand'}
+          <Box>
+            {/* Seperti struk: satu baris per makanan */}
+            <Box bg="bg.surface" border="1.5px solid" borderColor="border" borderRadius="label" px={4} py={2}>
+              {kulkas.closed.map((item, index) => (
+                <Flex
+                  key={item.id}
+                  align="baseline"
+                  gap={3}
+                  py={3}
+                  borderTop={index === 0 ? 'none' : '1px dashed'}
+                  borderColor="border.soft"
+                >
+                  <Box flex="1" minW={0}>
+                    <Text
+                      fontWeight={600}
+                      noOfLines={1}
+                      textDecoration={item.outcome === 'tossed' ? 'line-through' : 'none'}
+                      color={item.outcome === 'tossed' ? 'fg.muted' : 'fg'}
                     >
-                      <Icon size={17} aria-hidden="true" />
-                    </Flex>
-                    <Box flex="1" minW={0}>
-                      <Text fontWeight="semibold" noOfLines={1}>
-                        {item.foodName}
-                      </Text>
-                      <Text fontSize="xs" color="fg.muted">
-                        {OUTCOMES[item.outcome]} · {formatMoment(item.closedAt, now)}
-                      </Text>
-                    </Box>
-                    <IconButton
-                      variant="ghost"
-                      size="sm"
-                      aria-label={`Kembalikan ${item.foodName} ke daftar`}
-                      icon={<Undo2 size={16} />}
-                      onClick={() => kulkas.setOutcome(item.id, null)}
-                    />
-                    <IconButton
-                      variant="ghost"
-                      size="sm"
-                      aria-label={`Hapus ${item.foodName}`}
-                      icon={<Trash2 size={16} />}
-                      onClick={() => kulkas.deleteItem(item.id)}
-                    />
-                  </HStack>
-                )
-              })}
-            </Panel>
-            {confirmClear ? (
-              <HStack justify="center" spacing={3}>
-                <Text fontSize="sm" color="fg.muted">Hapus semua yang selesai?</Text>
-                <Button size="sm" variant="danger" onClick={() => { kulkas.clearClosed(); setConfirmClear(false) }}>
-                  Hapus
-                </Button>
-                <Button size="sm" variant="ghost" onClick={() => setConfirmClear(false)}>
-                  Batal
-                </Button>
-              </HStack>
-            ) : (
-              <Button variant="ghost" size="sm" alignSelf="center" onClick={() => setConfirmClear(true)}>
-                Hapus semua yang selesai
-              </Button>
-            )}
-          </>
+                      {item.foodName}
+                    </Text>
+                    <Text fontFamily="mono" fontSize="11px" color="fg.subtle">
+                      {formatMoment(item.closedAt, now)}
+                    </Text>
+                  </Box>
+                  <Text textStyle="mono" fontSize="11px" color={item.outcome === 'tossed' ? 'fg.muted' : 'brand'}>
+                    {OUTCOMES[item.outcome]}
+                  </Text>
+                  <SmallTextButton onClick={() => kulkas.setOutcome(item.id, null)} aria-label={`Kembalikan ${item.foodName}`}>
+                    Batal
+                  </SmallTextButton>
+                  <SmallTextButton onClick={() => kulkas.deleteItem(item.id)} aria-label={`Hapus ${item.foodName}`}>
+                    Hapus
+                  </SmallTextButton>
+                </Flex>
+              ))}
+            </Box>
+            <Box mt={5} textAlign="center">
+              {confirmClear ? (
+                <HStack justify="center" spacing={4}>
+                  <Text fontSize="sm" color="fg.muted">Hapus semua catatan ini?</Text>
+                  <Button size="sm" variant="danger" onClick={() => { kulkas.clearClosed(); setConfirmClear(false) }}>
+                    Hapus
+                  </Button>
+                  <SmallTextButton onClick={() => setConfirmClear(false)}>Batal</SmallTextButton>
+                </HStack>
+              ) : (
+                <SmallTextButton onClick={() => setConfirmClear(true)}>Hapus semua catatan</SmallTextButton>
+              )}
+            </Box>
+          </Box>
         ))}
     </VStack>
   )

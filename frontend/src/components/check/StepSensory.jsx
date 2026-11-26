@@ -1,5 +1,4 @@
 import { Box, Button, Collapse, Text, VStack } from '@chakra-ui/react'
-import { CircleCheck, CircleHelp, TriangleAlert } from 'lucide-react'
 import { SENSORY_CHECKS } from '../../constants/food'
 import OptionCard from '../ui/OptionCard'
 import StepHeader from './StepHeader'
@@ -18,29 +17,27 @@ function StepSensory({ answers, update, advance, finish }) {
   return (
     <Box>
       <StepHeader
-        title="Cium dan lihat sebentar. Ada yang aneh?"
-        subtitle="Bau asam, lendir, jamur, atau wadah menggembung."
+        title="Cium dulu. Ada yang aneh?"
+        subtitle="Bau asam, berlendir, ada jamur, atau wadahnya menggembung."
       />
 
-      <VStack align="stretch" spacing={2.5}>
+      <VStack align="stretch" spacing={2}>
         <OptionCard
-          icon={CircleCheck}
-          title="Semuanya normal"
-          description="Bau, warna, dan teksturnya biasa"
+          title="Normal semua"
+          description="Bau, warna, dan teksturnya biasa saja"
           selected={answers.sensory === 'normal'}
           onClick={() => advance({ sensory: 'normal', sensoryFlags: [] })}
         />
         <OptionCard
-          icon={TriangleAlert}
           tone="danger"
           title="Ada yang aneh"
-          description="Pilih tanda yang kamu temukan"
+          description="Tandai apa saja yang kamu temukan"
           selected={showFlags}
           onClick={() => update({ sensory: 'flags' })}
         />
 
         <Collapse in={showFlags} animateOpacity>
-          <Box pl={{ base: 0, sm: 4 }} pt={1} pb={2}>
+          <Box ml={{ base: 3, sm: 7 }} pl={4} py={2} borderLeft="1.5px dashed" borderColor="status.danger" borderRadius={0}>
             <VStack align="stretch" spacing={2}>
               {SENSORY_CHECKS.map((check) => (
                 <OptionCard
@@ -54,20 +51,19 @@ function StepSensory({ answers, update, advance, finish }) {
             </VStack>
             {answers.sensoryFlags.length > 0 ? (
               <Button variant="danger" size="lg" w="100%" mt={4} onClick={finish}>
-                Lihat hasil
+                Lihat hasil →
               </Button>
             ) : (
               <Text fontSize="sm" color="fg.muted" mt={3}>
-                Pilih minimal satu tanda.
+                Tandai minimal satu.
               </Text>
             )}
           </Box>
         </Collapse>
 
         <OptionCard
-          icon={CircleHelp}
-          title="Belum dicek"
-          description="Boleh lanjut, tapi hasilnya akan lebih hati-hati"
+          title="Belum dicium"
+          description="Boleh lanjut, tapi hasilnya jadi lebih hati-hati"
           selected={answers.sensory === 'unchecked'}
           onClick={() => advance({ sensory: 'unchecked', sensoryFlags: [] })}
         />

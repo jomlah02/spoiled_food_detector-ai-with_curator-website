@@ -238,7 +238,7 @@ export function evaluateFood({
 
   result.wasteGuidance =
     result.status === STATUS.OK
-      ? 'Biar tidak terbuang: beri label jam simpan di wadah, dan habiskan duluan yang paling lama. Kalau mau dibagikan, jaga tetap dingin di perjalanan dan beri tahu jam masaknya.'
+      ? 'Tulis jam simpan di wadahnya, lalu habiskan duluan yang paling lama. Kalau mau dibagikan, jaga tetap dingin di jalan dan beri tahu jam masaknya.'
       : result.status === STATUS.CAUTION
         ? 'Prioritaskan untuk dihabiskan hari ini. Porsi yang belum disentuh bisa langsung masuk kulkas.'
         : null
