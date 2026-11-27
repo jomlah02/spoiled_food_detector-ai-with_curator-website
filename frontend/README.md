@@ -1,5 +1,17 @@
 # React + Vite
 
+## Backend analisa Sesi 1
+
+Salin `.env.example` menjadi `.env`, lalu sesuaikan:
+
+- `VITE_API_URL` — base URL backend (kosongkan jika satu origin dengan frontend).
+- `VITE_ANALYZE_PATH` — endpoint analisa, default `/api/analyze`.
+
+Request dikirim sebagai `multipart/form-data` dengan field:
+`foto`, `nama`, `suhu_tempat`, `suhu_spesifik`, `waktu`, `waktu_spesifik`,
+`detail_tambahan`. Response JSON dipakai untuk menampilkan hasil analisa awal
+sebelum pertanyaan "Cium dulu. Ada yang aneh?".
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:

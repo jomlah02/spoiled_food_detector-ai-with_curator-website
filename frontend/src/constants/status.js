@@ -1,0 +1,26 @@
+export const STATUS = {
+  OK: 'ok',
+  CAUTION: 'caution',
+  DANGER: 'danger',
+  INFO: 'info',
+}
+
+export const STATUS_LABELS = {
+  ok: 'Layak, dengan catatan',
+  caution: 'Hati-hati',
+  danger: 'Jangan dikonsumsi',
+  info: 'Perlu info',
+}
+
+export const STATUS_STAMPS = {
+  ok: 'Layak',
+  caution: 'Hati-hati',
+  danger: 'Jangan dimakan',
+  info: 'Perlu info',
+}
+
+export const OUTCOMES = {
+  eaten: 'Dimakan',
+  shared: 'Dibagikan',
+  tossed: 'Dibuang',
+}
