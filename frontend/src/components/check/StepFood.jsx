@@ -3,6 +3,7 @@ import { Box, Button, Flex, Input, SimpleGrid, Text } from '@chakra-ui/react'
 import { FOOD_CATEGORIES, QUICK_FOODS, guessCategory } from '../../constants/food'
 import Chip from '../ui/Chip'
 import OptionCard from '../ui/OptionCard'
+import PhotoUpload from './PhotoUpload'
 import StepHeader from './StepHeader'
 
 function StepFood({ answers, update, next }) {
@@ -17,8 +18,8 @@ function StepFood({ answers, update, next }) {
   }
 
   const handleContinue = () => {
-    if (!answers.foodName.trim()) {
-      setError('Tulis nama makanannya dulu, atau ketuk salah satu di bawah.')
+    if (!answers.foodName.trim() && !answers.imagePreview) {
+      setError('Tambahkan foto, atau tulis nama makanannya dulu.')
       return
     }
     next()
@@ -26,7 +27,16 @@ function StepFood({ answers, update, next }) {
 
   return (
     <Box>
-      <StepHeader title="Makanan apa?" />
+      <StepHeader
+        title="Makanan apa?"
+        subtitle="Kirim foto saja, atau tulis dan pilih namanya sendiri."
+      />
+
+      <PhotoUpload answers={answers} update={update} onPhotoChange={() => setError('')} />
+
+      <Text textStyle="mono" color="fg.muted" mt={6} mb={3}>
+        Atau tulis nama makanannya
+      </Text>
 
       <Input
         size="lg"

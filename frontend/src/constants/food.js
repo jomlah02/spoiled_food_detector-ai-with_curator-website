@@ -68,9 +68,8 @@ export function guessCategory(name) {
 export const STORAGE_OPTIONS = [
   { id: 'fridge', label: 'Kulkas', desc: 'Rak dingin, ≤ 4°C' },
   { id: 'freezer', label: 'Freezer', desc: 'Beku, ≤ -18°C' },
-  { id: 'room_covered', label: 'Suhu ruang, tertutup', desc: 'Di meja, ada tutupnya' },
-  { id: 'room_open', label: 'Suhu ruang, terbuka', desc: 'Di meja, tanpa tutup' },
-  { id: 'unknown', label: 'Tidak tahu', desc: 'Tidak yakin disimpan di mana' },
+  { id: 'room_covered', label: 'Suhu ruang tertutup', desc: 'Di meja, ada tutupnya' },
+  { id: 'room_open', label: 'Suhu ruang terbuka', desc: 'Di meja, tanpa tutup' },
 ]
 
 export const isColdStorage = (storageId) =>
@@ -80,7 +79,6 @@ export const PRE_ROOM_OPTIONS = [
   { id: 'under2', label: 'Kurang dari 2 jam', hours: 1 },
   { id: '2to4', label: '2–4 jam', hours: 3 },
   { id: 'over4', label: 'Lebih dari 4 jam', hours: 5 },
-  { id: 'unknown', label: 'Tidak tahu', hours: null },
 ]
 
 export const SENSORY_CHECKS = [

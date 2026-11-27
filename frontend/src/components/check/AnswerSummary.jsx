@@ -12,12 +12,12 @@ const SENSORY_LABELS = {
 function labelFor(step, answers, now) {
   switch (step) {
     case 'food':
-      return answers.foodName.trim()
+      return answers.foodName.trim() || (answers.imagePreview ? 'foto makanan' : '')
     case 'sensory':
       return SENSORY_LABELS[answers.sensory]
     case 'time':
-      return answers.cookedChoice === 'unknown'
-        ? 'waktu tidak tahu'
+      return answers.cookedChoice === 'given'
+        ? 'pemberian'
         : `masak ${formatAgo(answers.cookedAt, now)}`
     case 'storage': {
       const pre = getPreRoom(answers.preRoom)

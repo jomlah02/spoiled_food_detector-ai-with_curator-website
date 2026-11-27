@@ -40,7 +40,7 @@ function StepTime({ answers, update, advance, next, now }) {
     <Box>
       <StepHeader
         title="Kapan dimasak atau dibeli?"
-        subtitle="Kira-kira saja, nanti kami yang hitung."
+        subtitle="Kira-kira saja, sudah dibedakan berdasarkan cakupan."
       />
 
       <SimpleGrid columns={2} spacing={2}>
@@ -93,12 +93,12 @@ function StepTime({ answers, update, advance, next, now }) {
           </Box>
         </Collapse>
         <OptionCard
-          title="Tidak tahu"
+          title="Pemberian"
           description="Misalnya dari acara, atau dikasih orang"
-          selected={answers.cookedChoice === 'unknown'}
+          selected={answers.cookedChoice === 'given'}
           onClick={() => {
             setShowCustom(false)
-            advance({ cookedAt: null, cookedChoice: 'unknown' })
+            advance({ cookedAt: null, cookedChoice: 'given' })
           }}
         />
       </VStack>

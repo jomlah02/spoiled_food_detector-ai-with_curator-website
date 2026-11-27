@@ -42,18 +42,30 @@ export function formatAgo(ms, now) {
   return `${formatDuration(hours)} lalu`
 }
 
+export const COOKED_TIME_LABELS = {
+  just_now: 'Baru saja',
+  today_morning: 'Tadi pagi',
+  today_noon: 'Tadi siang',
+  today_evening: 'Tadi sore',
+  yesterday_noon: 'Kemarin siang',
+  yesterday_evening: 'Kemarin malam',
+  two_days: '2 hari lalu',
+  custom: 'Tahu jam pastinya',
+  given: 'Pemberian',
+}
+
 export function getCookedTimeOptions(now) {
   const today = startOfDay(now)
   const at = (dayOffset, hour) => today + dayOffset * DAY + hour * HOUR
   const options = [
-    { id: 'just_now', label: 'Baru saja', value: now - 0.5 * HOUR },
-    { id: 'today_morning', label: 'Tadi pagi', value: at(0, 7) },
-    { id: 'today_noon', label: 'Tadi siang', value: at(0, 12) },
-    { id: 'today_evening', label: 'Tadi sore', value: at(0, 17) },
-    { id: 'yesterday_noon', label: 'Kemarin siang', value: at(-1, 12) },
-    { id: 'yesterday_evening', label: 'Kemarin malam', value: at(-1, 19) },
-    { id: 'two_days', label: '2 hari lalu', value: at(-2, 12) },
-  ]
+    { id: 'just_now', value: now - 0.5 * HOUR },
+    { id: 'today_morning', value: at(0, 7) },
+    { id: 'today_noon', value: at(0, 12) },
+    { id: 'today_evening', value: at(0, 17) },
+    { id: 'yesterday_noon', value: at(-1, 12) },
+    { id: 'yesterday_evening', value: at(-1, 19) },
+    { id: 'two_days', value: at(-2, 12) },
+  ].map((option) => ({ ...option, label: COOKED_TIME_LABELS[option.id] }))
   // jam yg belum lewat ga usah muncul
   return options.filter((o) => o.id === 'just_now' || o.value < now - HOUR)
 }

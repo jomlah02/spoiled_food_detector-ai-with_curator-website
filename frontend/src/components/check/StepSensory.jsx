@@ -1,10 +1,14 @@
-import { Box, Button, Collapse, Text, VStack } from '@chakra-ui/react'
+import { Box, Button, Collapse, Flex, Heading, Text, VStack } from '@chakra-ui/react'
 import { SENSORY_CHECKS } from '../../constants/food'
+import { getAnalysisView } from '../../lib/api'
+import Label from '../ui/Label'
 import OptionCard from '../ui/OptionCard'
+import Stamp from '../ui/Stamp'
 import StepHeader from './StepHeader'
 
-function StepSensory({ answers, update, advance, finish }) {
+function StepSensory({ answers, update, finish, analysis, analysisNotice }) {
   const showFlags = answers.sensory === 'flags'
+  const view = getAnalysisView(analysis, answers.foodName)
 
   const toggleFlag = (id) => {
     const flags = answers.sensoryFlags.includes(id)
@@ -15,6 +19,28 @@ function StepSensory({ answers, update, advance, finish }) {
 
   return (
     <Box>
+      <Label tape mb={6}>
+        <Flex justify="space-between" align="start" gap={4}>
+          <Text textStyle="mono" color="fg.muted" pt={1}>
+            {view.foodName || 'Hasil analisa awal'}
+          </Text>
+          {view.status && <Stamp status={view.status} />}
+        </Flex>
+        <Heading as="h2" fontSize={{ base: '22px', sm: '26px' }} lineHeight="1.15" mt={3}>
+          {view.headline}
+        </Heading>
+        {view.summary && (
+          <Text mt={3} color="fg.muted">
+            {view.summary}
+          </Text>
+        )}
+        {analysisNotice && (
+          <Text mt={3} fontSize="xs" color="fg.subtle">
+            {analysisNotice}
+          </Text>
+        )}
+      </Label>
+
       <StepHeader
         title="Cium dulu. Ada yang aneh?"
         subtitle="Bau asam, berlendir, ada jamur, atau wadahnya menggembung."
@@ -25,7 +51,7 @@ function StepSensory({ answers, update, advance, finish }) {
           title="Normal semua"
           description="Bau, warna, dan teksturnya biasa saja"
           selected={answers.sensory === 'normal'}
-          onClick={() => advance({ sensory: 'normal', sensoryFlags: [] })}
+          onClick={() => finish({ sensory: 'normal', sensoryFlags: [] })}
         />
         <OptionCard
           tone="danger"
@@ -64,7 +90,7 @@ function StepSensory({ answers, update, advance, finish }) {
           title="Belum dicium"
           description="Boleh lanjut, tapi hasilnya jadi lebih hati-hati"
           selected={answers.sensory === 'unchecked'}
-          onClick={() => advance({ sensory: 'unchecked', sensoryFlags: [] })}
+          onClick={() => finish({ sensory: 'unchecked', sensoryFlags: [] })}
         />
       </VStack>
     </Box>

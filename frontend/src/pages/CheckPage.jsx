@@ -12,7 +12,6 @@ import { useNow } from '../hooks/useNow'
 
 const STEP_COMPONENTS = {
   food: StepFood,
-  sensory: StepSensory,
   time: StepTime,
   storage: StepStorage,
   extras: StepExtras,
@@ -35,8 +34,9 @@ function CheckPage({ wizard, profile, onNewCheck, onNavigate }) {
     )
   }
 
-  const total = CHECK_STEPS.length
-  const StepComponent = STEP_COMPONENTS[wizard.stepName]
+  const steps = wizard.isSensory ? [...CHECK_STEPS, 'sensory'] : CHECK_STEPS
+  const total = steps.length
+  const StepComponent = wizard.isSensory ? StepSensory : STEP_COMPONENTS[wizard.stepName]
 
   return (
     <VStack align="stretch" spacing={6}>
@@ -57,7 +57,7 @@ function CheckPage({ wizard, profile, onNewCheck, onNavigate }) {
           </HStack>
         </Flex>
         <HStack spacing={1} aria-label={`Langkah ${wizard.step + 1} dari ${total}`} role="img">
-          {CHECK_STEPS.map((step, index) => (
+          {steps.map((step, index) => (
             <Box
               key={step}
               flex="1"
@@ -82,7 +82,12 @@ function CheckPage({ wizard, profile, onNewCheck, onNavigate }) {
           update={wizard.update}
           next={wizard.next}
           advance={wizard.advance}
+          submit={wizard.submit}
+          submitting={wizard.submitting}
+          submitError={wizard.submitError}
           finish={wizard.finish}
+          analysis={wizard.analysis}
+          analysisNotice={wizard.analysisNotice}
           now={now}
         />
       </Box>
