@@ -12,6 +12,51 @@ Request dikirim sebagai `multipart/form-data` dengan field:
 `detail_tambahan`. Response JSON dipakai untuk menampilkan hasil analisa awal
 sebelum pertanyaan "Cium dulu. Ada yang aneh?".
 
+### Pertanyaan lanjutan dari AI (Sesi 2)
+
+Response analisa boleh menyertakan hasil analisis awal dan daftar pertanyaan
+lanjutan. Format yang dipakai backend CuPI:
+
+```json
+{
+  "hasil_analisis_awal": {
+    "nama_makanan": "Opor ayam",
+    "kategori_jenis": "Bersantan & olahan susu",
+    "kondisi_visual": "Kuah masih kental, tidak terlihat berjamur."
+  },
+  "pertanyaan_dinamis": [
+    {
+      "id": "q1",
+      "pertanyaan": "Opor ayamnya disimpan di mana?",
+      "deskripsi": "Biar tahu seberapa cepat bakteri berkembang.",
+      "pilihan": [
+        {
+          "label": "Kulkas, kurang dari 2 jam di luar",
+          "sub_label": "Disimpan langsung setelah dingin",
+          "value": "kulkas_cepat"
+        },
+        {
+          "label": "Suhu ruang, lebih dari 4 jam",
+          "sub_label": "Dibiarkan di meja",
+          "value": "ruang_lama"
+        }
+      ]
+    }
+  ]
+}
+```
+
+Frontend juga menerima nama field alternatif seperti `pertanyaan_lanjutan`,
+`follow_up_questions`, `questions`, dan `pertanyaan`. Pilihan boleh berupa string,
+object `{ id, label, sub_label, value }`, atau object map. `sub_label` otomatis
+ditampilkan sebagai keterangan pilihan.
+
+Setiap pertanyaan dirender sebagai satu langkah wizard dengan komponen pilihan
+yang sama seperti step sebelumnya. Jawaban disimpan di state `followUps` dan
+ikut disertakan pada record hasil sebagai `followUpAnswers` agar siap dikirim
+kembali ke backend untuk hasil akhir.
+
+
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
 Currently, two official plugins are available:

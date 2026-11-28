@@ -9,13 +9,17 @@ import { ActionList, WasteTip, WhyDetails } from './ResultDetails'
 
 function CheckResult({ record, now, showWasteGuidance, onNewCheck, onOpenKulkas }) {
   const live = getLiveStatus(record, now)
+  // JENIS boleh kosong, jadi jangan tampilkan kategori tebakan saat user
+  // memang tidak memilihnya.
+  const category = record.categoryId ? getCategory(record.categoryId) : null
 
   return (
     <VStack align="stretch" spacing={8} pt={3}>
       <Label tape tapeAt="38%" p={{ base: 5, sm: 7 }} animation="labelIn 0.4s ease-out both">
         <Flex justify="space-between" align="start" gap={4}>
           <Text textStyle="mono" color="fg.muted" pt={1}>
-            {record.foodName} · {getCategory(record.categoryId).label}
+            {record.foodName}
+            {category ? ` · ${category.label}` : ''}
           </Text>
           {record.imagePreview && (
             <Image

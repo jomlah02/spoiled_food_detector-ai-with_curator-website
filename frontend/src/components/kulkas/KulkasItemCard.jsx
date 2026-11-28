@@ -41,7 +41,8 @@ function KulkasItemCard({ item, now, tilt = 0, tapeAt = '50%', onOutcome, onRech
               </Box>
             </Flex>
             <Text fontFamily="mono" fontSize="11px" color="fg.subtle" mt={1}>
-              {getCategory(item.categoryId).label.toLowerCase()} · dicek {formatAgo(item.checkedAt, now)}
+              {item.categoryId ? `${getCategory(item.categoryId).label.toLowerCase()} · ` : ''}
+              dicek {formatAgo(item.checkedAt, now)}
             </Text>
           </Box>
         </Flex>

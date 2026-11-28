@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Box, Button, Flex, Input, SimpleGrid, Text } from '@chakra-ui/react'
-import { FOOD_CATEGORIES, QUICK_FOODS, guessCategory } from '../../constants/food'
+import { FOOD_CATEGORIES, QUICK_FOODS } from '../../constants/food'
 import Chip from '../ui/Chip'
 import OptionCard from '../ui/OptionCard'
 import PhotoUpload from './PhotoUpload'
@@ -9,16 +9,26 @@ import StepHeader from './StepHeader'
 function StepFood({ answers, update, next }) {
   const [error, setError] = useState('')
 
+  const hasName = answers.foodName.trim().length > 0
+  const hasFood = hasName || Boolean(answers.imagePreview)
+
+  // Nama makanan diketik bebas. JENIS tidak ditebak otomatis supaya tetap
+  // sepenuhnya opsional dan user yang menentukan sendiri.
   const handleNameChange = (value) => {
     setError('')
+    update({ foodName: value })
+  }
+
+  // JENIS opsional: klik kartu yang sudah terpilih untuk mengosongkannya lagi.
+  const toggleCategory = (categoryId) => {
     update({
-      foodName: value,
-      categoryId: answers.categoryTouched ? answers.categoryId : guessCategory(value),
+      categoryId: answers.categoryId === categoryId ? null : categoryId,
+      categoryTouched: true,
     })
   }
 
   const handleContinue = () => {
-    if (!answers.foodName.trim() && !answers.imagePreview) {
+    if (!hasFood) {
       setError('Tambahkan foto, atau tulis nama makanannya dulu.')
       return
     }
@@ -63,7 +73,8 @@ function StepFood({ answers, update, next }) {
             selected={answers.foodName === food.label}
             onClick={() => {
               setError('')
-              update({ foodName: food.label, categoryId: food.categoryId, categoryTouched: false })
+              // Chip hanya mengisi nama. JENIS tetap manual dan boleh kosong.
+              update({ foodName: food.label })
             }}
           >
             {food.label}
@@ -72,7 +83,7 @@ function StepFood({ answers, update, next }) {
       </Flex>
 
       <Text textStyle="mono" color="fg.muted" mt={9} mb={3}>
-        Jenis {answers.foodName.trim() && '— sudah kami tebak, ganti kalau salah'}
+        Jenis — opsional, boleh dikosongkan
       </Text>
       <SimpleGrid columns={{ base: 1, sm: 2 }} spacing={2}>
         {FOOD_CATEGORIES.map((category) => (
@@ -81,12 +92,19 @@ function StepFood({ answers, update, next }) {
             title={category.label}
             description={category.hint}
             selected={answers.categoryId === category.id}
-            onClick={() => update({ categoryId: category.id, categoryTouched: true })}
+            onClick={() => toggleCategory(category.id)}
           />
         ))}
       </SimpleGrid>
 
-      <Button variant="primary" size="lg" w="100%" mt={8} onClick={handleContinue}>
+      <Button
+        variant="primary"
+        size="lg"
+        w="100%"
+        mt={8}
+        onClick={handleContinue}
+        isDisabled={!hasFood}
+      >
         Lanjut →
       </Button>
     </Box>

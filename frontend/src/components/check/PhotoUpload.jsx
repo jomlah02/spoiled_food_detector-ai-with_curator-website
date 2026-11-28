@@ -17,7 +17,8 @@ function PhotoUpload({ answers, update, onPhotoChange }) {
     setLoading(true)
     try {
       const imagePreview = await downscaleImage(file)
-      update({ photoFile: file, imagePreview })
+      // Foto baru = JENIS dikosongkan lagi. Jangan menebak kategori dari foto.
+      update({ photoFile: file, imagePreview, categoryId: null, categoryTouched: false })
       onPhotoChange?.()
     } catch {
       setError('Fotonya gagal dibuka. Coba foto lain.')
